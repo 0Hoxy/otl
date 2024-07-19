@@ -1,11 +1,14 @@
 package com.otl.entity;
 
 import com.otl.constant.Role;
+import com.otl.dto.UserRegisterFormDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @Entity
 @Table(name = "user")
@@ -27,4 +30,22 @@ public class User {
     private Role role;
 
 
+    public static User createUser(UserRegisterFormDTO userRegisterFormDTO, PasswordEncoder passwordEncoder) {
+        //새로운 User 객체 생성
+        User user = new User();
+        //이름 가져오기
+        user.setName(userRegisterFormDTO.getName());
+        //이메일 가져오기
+        user.setEmail(userRegisterFormDTO.getEmail());
+        //주소 가져오기
+        user.setAddress(userRegisterFormDTO.getAddress());
+        //비밀번호 암호화
+        String password = passwordEncoder.encode(userRegisterFormDTO.getPassword());
+        //암호화 한 비밀번호 가져오기
+        user.setPassword(password);
+        //유저 롤 USER로 만들기
+        user.setRole(Role.USER);
+        //user로 반환
+        return user;
+    }
 }
