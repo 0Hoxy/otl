@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en"
-xmlns:th="www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layouts/layout1}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -9,6 +11,8 @@ xmlns:th="www.thymeleaf.org">
     <title>OTL</title>
 </head>
 <body>
-    메인페이지
+<div layout:fragment="content">
+    <h1>메인페이지</h1>
+</div>
 </body>
 </html>
