@@ -1,4 +1,4 @@
-package com.otl.user.controller;
+package com.otl.main;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
