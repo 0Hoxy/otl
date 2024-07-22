@@ -42,9 +42,9 @@ public class User {
         String password = passwordEncoder.encode(userRegisterFormDTO.getPassword());
         //암호화 한 비밀번호 가져오기
         user.setPassword(password);
-        //유저 롤 USER로 만들기
+        //유저 롤 USER 만들기
         user.setRole(Role.USER);
-        //user로 반환
+        //user 반환
         return user;
     }
 }
