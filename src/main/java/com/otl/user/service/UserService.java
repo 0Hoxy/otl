@@ -1,7 +1,7 @@
-package com.otl.service;
+package com.otl.user.service;
 
-import com.otl.entity.User;
-import com.otl.repository.UserRepository;
+import com.otl.user.entity.User;
+import com.otl.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

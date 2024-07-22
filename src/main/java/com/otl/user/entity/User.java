@@ -1,10 +1,9 @@
-package com.otl.entity;
+package com.otl.user.entity;
 
-import com.otl.constant.Role;
-import com.otl.dto.UserRegisterFormDTO;
+import com.otl.user.constant.Role;
+import com.otl.user.dto.UserRegisterFormDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.crypto.password.PasswordEncoder;

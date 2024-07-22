@@ -1,4 +1,4 @@
-package com.otl.constant;
+package com.otl.user.constant;
 
 
 public enum Role {
