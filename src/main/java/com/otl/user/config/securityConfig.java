@@ -1,19 +1,51 @@
 package com.otl.user.config;
 
+import com.otl.user.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class securityConfig {
 
+    private final UserService userService;
+
+    public securityConfig(UserService userService) {
+        this.userService = userService;
+    }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(requests -> requests
+                        // 정적 리소스에 대한 접근 설정
+                        .requestMatchers("/js/**", "/css/**", "/images/**").permitAll()
+                        // 공개 페이지에 대한 접근 설정
+                        .requestMatchers("/", "/user/register", "/user/login").permitAll()
+                        //여기에 비회원들도 입장가능한 페이지 추가
+                        .anyRequest().authenticated()
+                )
+                .formLogin(login -> login
+                        .loginPage("/user/login")
+                        .defaultSuccessUrl("/")
+                        //loadUserByUsername에서 넘겨받은 User.builder().build()의 파라미터에서 username을 "email"로 지정한다.(로그인 시 사용할 파라미터 이름으로 email을 지정한다)
+                        .usernameParameter("email")
+                        .failureUrl("/user/login/error")
+                )
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+                        .logoutSuccessUrl("/")
+                )
+                .userDetailsService(userService);
+
         return http.build();
     }
 
@@ -29,5 +61,11 @@ public class securityConfig {
         return authConfiguration.getAuthenticationManager();
     }
 
+//3.x 버전 미만에서만 사용됐다.
+    /*@Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder());
+    }*/
 
 }

@@ -30,7 +30,7 @@
 <div layout:fragment="content">
     <section class="container forms">
         <!--Login Form-->
-        <div class="form login">
+        <div class="form signup">
             <div class="form-content">
                 <header>Register</header>
                 <form action="/user/register" role="form" method="post" th:object="${userRegisterFormDTO}">
@@ -52,9 +52,6 @@
                         <input type="text" th:field="*{address}" placeholder="Address" class="input">
                         <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError"></p>
                     </div>
-                    <div class="form-link">
-                        <a href="#" class="forgot-pass">Forgot password?</a>
-                    </div>
 
                     <div class="field button-field">
                         <button type="submit">Signup</button>
@@ -64,7 +61,7 @@
                 </form>
 
                 <div class="form-link">
-                    <span>Don't have an account? <a href="#" class="link signup-link">Signup</a></span>
+                    <span>Already have an account? <a href="#" class="link login-link">Login</a></span>
                 </div>
             </div>
 
