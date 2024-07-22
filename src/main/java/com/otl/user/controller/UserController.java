@@ -1,7 +1,7 @@
-package com.otl.controller;
+package com.otl.user.controller;
 
-import com.otl.dto.UserRegisterFormDTO;
-import com.otl.service.UserService;
+import com.otl.user.dto.UserRegisterFormDTO;
+import com.otl.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
