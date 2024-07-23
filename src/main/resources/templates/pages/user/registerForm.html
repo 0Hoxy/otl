@@ -30,7 +30,7 @@
 <div layout:fragment="content">
     <section class="container forms">
         <!--Login Form-->
-        <div class="form signup">
+        <div class="form">
             <div class="form-content">
                 <header>Register</header>
                 <form action="/user/register" role="form" method="post" th:object="${userRegisterFormDTO}">
@@ -61,7 +61,7 @@
                 </form>
 
                 <div class="form-link">
-                    <span>Already have an account? <a href="#" class="link login-link">Login</a></span>
+                    <span>Already have an account? <a href="/user/login" class="link login-link">Login</a></span>
                 </div>
             </div>
 
