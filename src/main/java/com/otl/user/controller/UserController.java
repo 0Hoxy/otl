@@ -20,13 +20,13 @@ public class UserController {
 
     @GetMapping("/login")
     public String loginPage() {
-        return "main";
+        return "pages/main";
     }
 
     @GetMapping("/register")
     public String RegisterPage(Model model) {
         model.addAttribute("UserRegisterFormDTO", new UserRegisterFormDTO());
-        return "user/registerForm";
+        return "pages/user/registerForm";
     }
 
     @PostMapping("/register")

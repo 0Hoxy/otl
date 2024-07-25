@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숙소 목록</title>
+    <!-- 부트스트랩 CSS 포함 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 커스텀 CSS -->
+    <style>
+        body {
+            padding: 20px;
+        }
+        .category {
+            margin-bottom: 20px;
+        }
+        .category ul {
+            list-style: none;
+            padding: 0;
+        }
+        .category li {
+            display: inline;
+            margin-right: 10px;
+        }
+        .category a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .category a:hover {
+            text-decoration: underline;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .clickable-link {
+            color: #007bff;
+        }
+        .clickable-link:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4">숙소 목록</h1>
+    <form th:action="@{/accommodation/search}" method="get">
+        <input type="text" name="searchContent" placeholder="검색 내용 입력">
+        <button type="submit">검색</button>
+    </form>
+    <button class="btn btn-primary mb-3" onclick="window.location.href='http://localhost:8080/accommodation/list'">
+        전체목록
+    </button>
+    <div class="category">
+        <ul>
+            <li><a href="http://localhost:8080/accommodation/list/1102">호텔</a></li>
+            <li><a href="http://localhost:8080/accommodation/list/1103">모텔</a></li>
+            <li><a href="http://localhost:8080/accommodation/list/1104">여관</a></li>
+            <li><a href="http://localhost:8080/accommodation/list/1105">펜션</a></li>
+            <li><a href="http://localhost:8080/accommodation/list/1106">민박</a></li>
+            <li><a href="http://localhost:8080/accommodation/list/1107">여인숙</a></li>
+        </ul>
+    </div>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+            <th>구분</th>
+            <th>숙소명</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="accommodation : ${accommodations}">
+            <td th:text="${accommodation.themeName}">Theme Name</td>
+            <td>
+                <a th:href="@{/accommodation/detail/{accommodationName}(accommodationName=${accommodation.accommodationName})}"
+                   th:text="${accommodation.accommodationName}"
+                   class="clickable-link">Hotel Name</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
