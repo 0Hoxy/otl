@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class User {
 
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -43,7 +44,7 @@ public class User {
         //암호화 한 비밀번호 가져오기
         user.setPassword(password);
         //유저 롤 USER 만들기
-        user.setRole(Role.USER);
+        user.setRole(Role.ADMIN);
         //user 반환
         return user;
     }
