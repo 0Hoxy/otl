@@ -25,6 +25,12 @@ public class UserController {
         return "/pages/user/loginForm";
     }
 
+    @GetMapping("/login/error")
+    public String loginError(Model model) {
+        model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
+        return "/pages/user/loginForm";
+    }
+
     @GetMapping("/register")
     public String RegisterPage(Model model) {
         //attributeName의 시작이 대문자로 되어있어서 POST의 attributeName과 달라서 계속 오류가 생겼다.
@@ -45,6 +51,6 @@ public class UserController {
             model.addAttribute("errorMessage", e.getMessage());
             return "pages/user/registerForm";
         }
-        return "redirect:/";
+        return "redirect:/user/login";
     }
 }

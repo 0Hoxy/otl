@@ -4,21 +4,19 @@ import com.otl.user.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
-public class securityConfig {
+public class SecurityConfig {
 
     private final UserService userService;
 
-    public securityConfig(UserService userService) {
+    public SecurityConfig(UserService userService) {
         this.userService = userService;
     }
 
@@ -31,6 +29,7 @@ public class securityConfig {
                         // 공개 페이지에 대한 접근 설정
                         .requestMatchers("/", "/user/register", "/user/login").permitAll()
                         //여기에 비회원들도 입장가능한 페이지 추가
+                        .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -44,7 +43,13 @@ public class securityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                         .logoutSuccessUrl("/")
                 )
-                .userDetailsService(userService);
+                .userDetailsService(userService)
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**") // H2 콘솔 경로에 대해 CSRF 비활성화
+                )
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                );
 
         return http.build();
     }
