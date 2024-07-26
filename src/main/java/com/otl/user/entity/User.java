@@ -45,7 +45,7 @@ public class User extends BaseEntity {
         //암호화 한 비밀번호 가져오기
         user.setPassword(password);
         //유저 롤 USER 만들기
-        user.setRole(Role.ADMIN);
+        user.setRole(Role.USER);
         //user 반환
         return user;
     }
