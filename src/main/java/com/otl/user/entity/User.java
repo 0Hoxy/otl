@@ -1,5 +1,6 @@
 package com.otl.user.entity;
 
+import com.otl.common.Entity.BaseEntity;
 import com.otl.user.constant.Role;
 import com.otl.user.dto.UserRegisterFormDTO;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Getter
 @Setter
 @ToString
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @Column(name = "user_id")

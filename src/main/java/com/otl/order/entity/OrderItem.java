@@ -1,16 +1,16 @@
 package com.otl.order.entity;
 
+import com.otl.common.Entity.BaseEntity;
 import com.otl.items.entity.Item;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Setter
-public class OrderItem {
+//BaseEntity를 상속 받아서 시간 관련 코드를 이용하고 있음
+public class OrderItem extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "order_item_id")
@@ -28,7 +28,4 @@ public class OrderItem {
 
     private int count;
 
-    private LocalDateTime regTime;
-
-    private LocalDateTime updateTime;
 }
