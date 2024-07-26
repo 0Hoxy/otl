@@ -1,4 +1,4 @@
-package com.otl.config;
+package com.otl.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.otl.config;
+package com.otl.common.config;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
