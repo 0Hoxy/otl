@@ -10,7 +10,8 @@
 <body>
 <div class="container mt-5">
     <h2 class="mb-4">항공편 검색</h2>
-    <form th:action="@{/fl/flightList}" method="post">
+<!--    <form action="/fl/flightList" method="get">-->
+    <form th:action="@{/fld/flightList}" method="post">
 <!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
 <!--    <form id="searchFlightForm" method="post">-->
         <div class="row g-3">
@@ -122,19 +123,22 @@
             $('#startDate').datepicker('setDate', futureDate);
         });
 
+        // 왕복 여행 선택 시 도착 날짜 입력 필드 표시
         $('input[name="tripType"]').change(function() {
             if ($('#roundTrip').is(':checked')) {
                 $('#endDateContainer').show();
-                $('#endDate').prop('required', true);
+                $('#endDate').prop('required', true); // 필수 입력 필드로 설정
             } else {
                 $('#endDateContainer').hide();
-                $('#endDate').prop('required', false);
+                $('#endDate').prop('required', false); // 필수 입력 필드 해제
             }
         });
 
         // $('input[name="flightType"]').flightchange(function(){
         //     if ($('#international').is(':checked')) {
-        //
+        //          // 국제선 선택 시 어쩌고 실행할 코드 작성
+        //         } else {
+        //              $('#endDate').prop('required', false);
         //         }
         // });
 </script>

@@ -7,10 +7,8 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-
 import org.json.JSONObject;
 import org.json.JSONArray;
-
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -142,7 +140,7 @@ public class DFlightServiceImpl implements DFlightService {
             svo.setAirlineNm(dobj.optString("airlineNm", "airlineName is Null")); // 항공사명
             svo.setDepPlandTime(dobj.getLong("depPlandTime")); // 출발시간
             svo.setArrPlandTime(dobj.getLong("arrPlandTime")); // 도착시간
-            svo.setEconomyCharge(dobj.optInt("economyCharge")); // 일반석운임
+            svo.setEconomyCharge(dobj.optInt("economyCharge", 86000)); // 일반석운임 (기본값으로 86000원 설정)
             svo.setPrestigeCharge(dobj.optInt("prestigeCharge")); // 비즈니스석운임
             svo.setDepAirportNm(dobj.getString("depAirportNm")); // 출발공항
             svo.setArrAirportNm(dobj.getString("arrAirportNm")); // 도착공항

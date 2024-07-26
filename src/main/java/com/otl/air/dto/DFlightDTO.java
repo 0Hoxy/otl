@@ -62,4 +62,6 @@ public class DFlightDTO {
         this.totalCount = totalCount;
         this.endPN_ko = endPN_ko;
     }
+
+
 }

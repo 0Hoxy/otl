@@ -8,9 +8,7 @@ import lombok.AllArgsConstructor;
 import org.json.JSONException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,31 +19,53 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Controller
-@RequestMapping("fl")
+@RequestMapping("fld")
 @AllArgsConstructor
-public class FlightController {
+public class DFlightController {
 
     private final DFlightService dService;
 
     // 항공편 조회 페이지
     @GetMapping("/flight")
     public String flight() throws Exception {
-        return "pages/air/searchFlight";
+        return "pages/air/searchFlightD";
     }
 
     // 항공편 조회 결과 페이지
     @GetMapping("/flightPage")
     public String flightList() throws Exception {
-        return "pages/air/searchFlightPage";
+        return "pages/air/searchFlightPageD";
     }
+
+    // 항공 스케줄 조회 - GET 요청 지원 추가
+//    @GetMapping("/flightList")
+//    public String searchFlightGet(HttpServletRequest request, HttpServletResponse response, Model model,
+//                                  @RequestParam(defaultValue = "1") int pageNum,
+//                                  @RequestParam(defaultValue = "10") int pageSize) throws IOException, ParseException, JSONException {
+//        return searchFlight(request, response, model, pageNum, pageSize);
+//    }
+
+    @GetMapping("/flightList")
+    public String searchFlight(@RequestParam String startPortName,
+                               @RequestParam String endPortName,
+                               @RequestParam String date_start,
+                               @RequestParam(required = false) String airline,
+                               @RequestParam(required = false, defaultValue = "1") int pageNum,
+                               Model model) {
+        // 메서드 구현
+        return "pages/air/searchFlightPageD";
+    }
+
 
     // 항공 스케줄 조회
     @RequestMapping(value = "/flightList", method=RequestMethod.POST)
-    public String searchFlight(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException, ParseException, JSONException {
+    public String searchFlight(HttpServletRequest request, HttpServletResponse response, Model model,
+                               @RequestParam(defaultValue = "1") int pageNum,
+                               @RequestParam(defaultValue = "10") int pageSize) throws IOException, ParseException, JSONException {
 
         if ("GET".equalsIgnoreCase(request.getMethod())) {
             // GET 요청일 경우, 단순히 검색 페이지를 반환
-            return "pages/air/searchFlight";
+            return "pages/air/searchFlightD";
         }
 
 //        String startPortName = request.getParameter("from_place");
@@ -55,7 +75,6 @@ public class FlightController {
         String startDate = request.getParameter("date_start");
 //        String airline = request.getParameter("airline");
         String airline = "";
-        Integer pageNum = 1;
 
         // 기본 출발 날짜 설정 (현재 날짜 + 3일)
         if (isNullOrEmpty(startDate)) {
@@ -70,7 +89,7 @@ public class FlightController {
             out.println("<script>alert('출발 날짜를 선택해주세요.'); </script>");
             out.flush();
             System.out.println("=========== 출발 날짜를 선택해주세요. =============");
-            return "pages/air/searchFlight";
+            return "pages/air/searchFlightD";
         }
 
         startDate = formatDate(startDate);
@@ -95,13 +114,17 @@ public class FlightController {
             System.err.println("JSON 파싱 실패.");
             e.printStackTrace();
             sendAlert(response, "항공편 데이터를 처리하는 데 실패했습니다.");
-            return "pages/air/searchFlight";
+            return "pages/air/searchFlightD";
         }
 
         if (flist.isEmpty()) { // api 조회 결과가 없을 때 = 항공편 미존재
             sendAlert(response, "해당 항공편은 존재하지 않습니다.");
-            return "pages/air/searchFlight";
+            return "pages/air/searchFlightD";
         }
+
+        // 페이지네이션 처리
+        int totalCount = flist.get(0).getTotalCount();
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
         DFlightDTO fhlist = new DFlightDTO(startPortName, endPortName, startDate, airline, pageNum,
             flist.get(0).getTotalCount(), dService.nameSet(endPortName));
@@ -110,10 +133,15 @@ public class FlightController {
         model.addAttribute("flist", flist);
         model.addAttribute("fhlist", fhlist);
 
-        return "pages/air/searchFlightPage"; // 검색 결과 페이지
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageSize", pageSize);
+
+        return "pages/air/searchFlightPageD"; // 검색 결과 페이지
     }
 
-    // 메서드
+
+    // 메서드들
     private boolean isNullOrEmpty(String str) {
         return str == null || str.isEmpty();
     }
