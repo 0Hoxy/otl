@@ -3,6 +3,7 @@ package com.otl.items.dto;
 import com.otl.items.constant.ItemSellStatus;
 import com.otl.items.entity.Item;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
@@ -20,13 +21,13 @@ public class ItemFormDto {
     @NotBlank(message = "상품명을 입력해주세요.")
     private String itemNm;
 
-    @NotBlank(message = "가격을 입력해주세요.")
+    @NotNull(message = "가격을 입력해주세요.")
     private Integer price;
 
     @NotBlank(message = "상품 설명을 입력해주세요.")
     private String itemDetail;
 
-    @NotBlank(message = "재고를 입력해주세요.")
+    @NotNull(message = "재고를 입력해주세요.")
     private Integer stockNumber;
 
     private ItemSellStatus itemSellStatus;
