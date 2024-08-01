@@ -1,6 +1,8 @@
 package com.otl.items.entity;
 
+import com.otl.common.Entity.BaseEntity;
 import com.otl.items.constant.ItemSellStatus;
+import com.otl.items.dto.ItemFormDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class Item {
+public class Item extends BaseEntity {
 
     @Id
     @Column(name = "item_id")
@@ -21,7 +23,7 @@ public class Item {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String ItemNm;
+    private String itemNm;
 
     @Column(nullable = false, name = "price")
     private int price;
@@ -39,4 +41,12 @@ public class Item {
     private LocalDateTime regTime;
 
     private LocalDateTime updateTime;
+
+    public void updateItem(ItemFormDto itemFormDto) {
+        this.itemNm = itemFormDto.getItemNm();
+        this.price = itemFormDto.getPrice();
+        this.stockNumber = itemFormDto.getStockNumber();
+        this.itemDetail = itemFormDto.getItemDetail();
+        this.itemSellStatus = itemFormDto.getItemSellStatus();
+    }
 }

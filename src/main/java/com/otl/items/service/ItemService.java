@@ -1,15 +1,18 @@
 package com.otl.items.service;
 
 import com.otl.items.dto.ItemFormDto;
+import com.otl.items.dto.ItemImgDto;
 import com.otl.items.entity.Item;
 import com.otl.items.entity.ItemImg;
 import com.otl.items.repository.ItemImgRepository;
 import com.otl.items.repository.ItemRepository;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,6 +42,54 @@ public class ItemService {
             }
             itemImgService.saveItemImg(itemImg, itemImgFileList.get(i)); //상품의 이미지 정보를 저장한다.
         }
+        return item.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public ItemFormDto getItemDtl(Long itemId) {
+        List<ItemImg> itemImgList = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
+        List<ItemImgDto> itemImgDtoList = new ArrayList<>();
+        for (ItemImg itemImg : itemImgList) {
+            ItemImgDto itemImgDto = ItemImgDto.of(itemImg);
+            itemImgDtoList.add(itemImgDto);
+        }
+
+        Item item = itemRepository.findById(itemId).orElseThrow(EntityNotFoundException::new);
+        ItemFormDto itemFormDto = ItemFormDto.of(item);
+        itemFormDto.setItemImgDtoList(itemImgDtoList);
+        return itemFormDto;
+    }
+
+    public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
+        /*
+        if (itemImgFileList.get(0).isEmpty()) {
+            System.out.println("0 번 파일이 없습니다.");
+        }
+        if (itemImgFileList.get(1).isEmpty()) {
+            System.out.println("1 번 파일이 없습니다.");
+        }
+        if (itemImgFileList.get(2).isEmpty()) {
+            System.out.println("2 번 파일이 없습니다.");
+        }
+        if (itemImgFileList.get(3).isEmpty()) {
+            System.out.println("3 번 파일이 없습니다.");
+        }
+        if (itemImgFileList.get(4).isEmpty()) {
+            System.out.println("4 번 파일이 없습니다.");
+        }
+        */
+        //상품 수정
+        Item item = itemRepository.findById(itemFormDto.getId())
+                .orElseThrow(EntityNotFoundException::new);
+        item.updateItem(itemFormDto);
+
+        List<Long> itemImgIds = itemFormDto.getItemImgIds();
+
+        //이미지 등록
+        for (int i = 0; i < itemImgFileList.size(); i++) {
+                itemImgService.updateItemImg(itemImgIds.get(i), itemImgFileList.get(i));
+        }
+
         return item.getId();
     }
 }
