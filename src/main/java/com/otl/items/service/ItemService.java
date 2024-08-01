@@ -34,8 +34,8 @@ public class ItemService {
                 itemImg.setRepimgYn("Y");
             } else {
                 itemImg.setRepimgYn("N");
-                itemImgService.saveItemImg(itemImg, itemImgFileList.get(i)); //상품의 이미지 정보를 저장한다.
             }
+            itemImgService.saveItemImg(itemImg, itemImgFileList.get(i)); //상품의 이미지 정보를 저장한다.
         }
         return item.getId();
     }
