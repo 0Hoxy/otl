@@ -30,6 +30,8 @@ public class ItemService {
         for (int i = 0; i < itemImgFileList.size(); i++) {
             ItemImg itemImg = new ItemImg();
             itemImg.setItem(item);
+
+            //else 중괄호 안에 이미지 저장 메소드가 들어가 있어서 i == 0 일때는 상품 이미지가 저장되지 않는 상황이 발생, 전체가 해당 되도록 수정했음
             if (i == 0) { //첫번째 이미지일 경우 대표 상품 이미지 여부 값을 "Y"로 세팅한다.
                 itemImg.setRepimgYn("Y");
             } else {
