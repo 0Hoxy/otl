@@ -3,6 +3,7 @@ package com.otl.items.entity;
 import com.otl.common.Entity.BaseEntity;
 import com.otl.items.constant.ItemSellStatus;
 import com.otl.items.dto.ItemFormDto;
+import com.otl.items.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,5 +49,13 @@ public class Item extends BaseEntity {
         this.stockNumber = itemFormDto.getStockNumber();
         this.itemDetail = itemFormDto.getItemDetail();
         this.itemSellStatus = itemFormDto.getItemSellStatus();
+    }
+
+    public void removeStock(int stockNumber) {
+        int restStock = this.stockNumber - stockNumber; //주문 후 남은 재고 수량
+        if(restStock < 0) {
+            throw new OutOfStockException("상품의 재고가 부족합니다. (현재 재고 수량: " + this.stockNumber + ")"); //재고가 주문수량보다 작을경우 예외 발생
+        }
+        this.stockNumber = restStock; //주문 후 남은 재고 수량을 상품의 현재 재고 값으로 할당한다.
     }
 }
