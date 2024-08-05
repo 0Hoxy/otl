@@ -44,6 +44,7 @@ public class ItemImgService {
             ItemImg savedItemImg = itemImgRepository.findById(itemImgId)
                     .orElseThrow(EntityNotFoundException::new);
 
+
             //기존 이미지 파일 삭제
             if(!StringUtils.isEmpty(savedItemImg.getImgName())) {
                 fileService.deleteFile(itemImgLocation+"/"+ savedItemImg.getImgName());

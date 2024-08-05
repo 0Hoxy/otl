@@ -39,7 +39,7 @@ class UserTest {
 
         System.out.println("register time : " + user.getRegTime());
         System.out.println("update time : " + user.getUpdateTime());
-        System.out.println("create user : " + user.getCreateBy());
+        System.out.println("create user : " + user.getCreatedBy());
         System.out.println("modify user : " + user.getModifiedBy());
 
     }
