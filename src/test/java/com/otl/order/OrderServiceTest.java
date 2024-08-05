@@ -7,6 +7,7 @@ import com.otl.order.dto.OrderDto;
 import com.otl.order.entity.Order;
 import com.otl.order.entity.OrderItem;
 import com.otl.order.repository.OrderRepository;
+import com.otl.order.service.OrderService;
 import com.otl.user.entity.User;
 import com.otl.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;

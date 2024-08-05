@@ -1,6 +1,6 @@
 package com.otl.order.controller;
 
-import com.otl.order.OrderService;
+import com.otl.order.service.OrderService;
 import com.otl.order.dto.OrderDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

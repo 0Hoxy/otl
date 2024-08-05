@@ -1,4 +1,4 @@
-package com.otl.order;
+package com.otl.order.service;
 
 import com.otl.items.entity.Item;
 import com.otl.items.repository.ItemRepository;
