@@ -107,7 +107,7 @@
                     <input type="file" class="custom-file-input" name="itemImgFile">
                     <!--name="itemimgids"가 itemimdids로 되어있어서 오류가 났음...-->
                     <input type="hidden" name="itemImgIds" th:value="${itemImgDto.id}">
-                    <label class="custom-file-label" th:text="${not #strings.isEmpty(itemImgDto.oriImgName)} ? ${itemImgDto.oriImgName} : '상품이미지' + ${status.index+1}"></label>
+                    <label class="custom-file-label" th:text="${not #strings.isEmpty(itemImgDto.oriImgName)} ? ${itemImgDto.oriImgName} : '상품이미지' + ${status.index + 1}"></label>
                 </div>
             </div>
         </div>
