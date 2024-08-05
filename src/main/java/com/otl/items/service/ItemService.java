@@ -7,6 +7,7 @@ import com.otl.items.entity.Item;
 import com.otl.items.entity.ItemImg;
 import com.otl.items.repository.ItemImgRepository;
 import com.otl.items.repository.ItemRepository;
+import com.otl.main.dto.MainItemDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -83,5 +84,10 @@ public class ItemService {
     @Transactional(readOnly = true)
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
         return itemRepository.getAdminItemPage(itemSearchDto, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+        return itemRepository.getMainItemPage(itemSearchDto, pageable);
     }
 }

@@ -7,20 +7,20 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
 
-        $(document).ready(function(){
-            $("#searchBtn").on("click",function(e) {
+        $(document).ready(function () {
+            $("#searchBtn").on("click", function (e) {
                 e.preventDefault();
                 page(0);
             });
         });
 
-        function page(page){
+        function page(page) {
             var searchDateType = $("#searchDateType").val();
             var searchSellStatus = $("#searchSellStatus").val();
             var searchBy = $("#searchBy").val();
             var searchQuery = $("#searchQuery").val();
 
-            location.href="/admin/items/" + page + "?searchDateType=" + searchDateType
+            location.href = "/admin/items/" + page + "?searchDateType=" + searchDateType
                 + "&searchSellStatus=" + searchSellStatus
                 + "&searchBy=" + searchBy
                 + "&searchQuery=" + searchQuery;
@@ -32,8 +32,8 @@
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
     <style>
-        select{
-            margin-right:10px;
+        select {
+            margin-right: 10px;
         }
     </style>
 </th:block>
@@ -57,23 +57,26 @@
                 <td>
                     <a th:href="'/admin/item/'+${item.id}" th:text="${item.itemNm}"></a>
                 </td>
-                <td th:text="${item.itemSellStatus == (T(com.otl.items.constant.ItemSellStatus).SELL) ? '판매중' : '품절'}"></td>
+                <!--열거형(enum) 비교에서 == 대신 equals() 메소드를 사용하는 것이 일반적으로 더 안전하고 권장되는 방법-->
+                <td th:text="${item.itemSellStatus eq T(com.otl.items.constant.ItemSellStatus).SELL} ? '판매중' : '품절'"></td>
                 <td th:text="${item.createdBy}"></td>
                 <td th:text="${item.regTime}"></td>
             </tr>
             </tbody>
         </table>
 
-        <div th:with="start=${(items.number/maxPage)*maxPage + 1}, end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})" >
+        <div th:with="start=${(items.number/maxPage)*maxPage + 1}, end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})">
             <ul class="pagination justify-content-center">
 
                 <li class="page-item" th:classappend="${items.first}?'disabled'">
-                    <a th:onclick="'javascript:page(' + ${items.number - 1} + ')'" aria-label='Previous' class="page-link">
+                    <a th:onclick="'javascript:page(' + ${items.number - 1} + ')'" aria-label='Previous'
+                       class="page-link">
                         <span aria-hidden='true'>Previous</span>
                     </a>
                 </li>
 
-                <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${items.number eq page - 1}?'active':''">
+                <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}"
+                    th:classappend="${items.number eq page - 1}?'active':''">
                     <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
                 </li>
 
