@@ -1,11 +1,15 @@
 package com.otl.accommodation.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "accommodation")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Accommodation {
 
     @Id
@@ -16,12 +20,16 @@ public class Accommodation {
 
     private String accommodationAddress;    // 숙소 주소
 
-    private String localName;    // 지역명
-
     private String phoneNumber; // 숙소 번호
 
     private String themeName;   // 업소 구분
 
-    private String accommodationPage;   // 숙소 페이지
+    private String pictureUrl; // 숙소 대표 사진
 
+    public Accommodation(String accommodationName, String accommodationAddress, String themeName, String pictureUrl) {
+        this.accommodationName = accommodationName;
+        this.accommodationAddress = accommodationAddress;
+        this.themeName = themeName;
+        this.pictureUrl = pictureUrl;
+    }
 }

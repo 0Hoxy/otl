@@ -22,11 +22,11 @@ public class HotelService {
                                                String checkOutDate,
                                                Long adults) {
         // SerpApi를 통해 호텔 검색
-//        api key 추가해야함 없앴음
+        String apiKey = "e17c8048b26cbbe9959d8b034c650ca2d2e557ee805b0b55904254dff027428d";
         String url = "https://serpapi.com/search?engine=google_hotels&q=" + searchContent
                 + "&check_in_date=" + checkInDate + "&check_out_date="
                 + checkOutDate + "&adults=" + adults
-                + "&gl=kr&hl=ko" + "&api_key=" + apiKey;
+                + "&gl=kr&hl=ko&currency=KRW" + "&api_key=" + apiKey;
 
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(url, String.class);

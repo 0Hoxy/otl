@@ -10,9 +10,30 @@
     <style>
         body {
             padding: 20px;
+            background-color: #f8f9fa;
         }
-        .category {
-            margin-bottom: 20px;
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-control, .btn {
+            border-radius: 0.25rem;
+        }
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-decoration: none;
+        }
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-body {
+            padding: 15px;
         }
         .category ul {
             list-style: none;
@@ -25,60 +46,85 @@
         .category a {
             text-decoration: none;
             color: #007bff;
+            font-weight: bold;
         }
         .category a:hover {
             text-decoration: underline;
         }
-        .table th, .table td {
-            vertical-align: middle;
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
         }
-        .clickable-link {
-            color: #007bff;
+        .btn-primary:hover {
+            background-color: #0056b3;
         }
-        .clickable-link:hover {
-            color: #0056b3;
-            text-decoration: underline;
+        .search-form {
+            margin-bottom: 30px;
+        }
+        .card-link {
+            text-decoration: none;
+            color: inherit;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1 class="my-4">숙소 목록</h1>
-    <form th:action="@{/accommodation/search}" method="get">
-        <input type="text" name="searchContent" placeholder="검색 내용 입력">
-        <button type="submit">검색</button>
+    <h1 class="my-4 text-center">숙소 목록</h1>
+    <form th:action="@{/accommodation/search}" method="get" class="search-form">
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <select class="form-control mb-2" id="themeName" name="themeName">
+                    <option value="">-- 선택 --</option>
+                    <option value="호텔">호텔</option>
+                    <option value="펜션">펜션</option>
+                    <option value="모텔">모텔</option>
+                    <option value="리조트">리조트</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <input type="text" name="searchContent" class="form-control mb-2" placeholder="검색 내용 입력">
+            </div>
+            <div class="col-auto">
+                <input type="date" name="checkInDate" class="form-control mb-2" placeholder="체크인 날짜">
+            </div>
+            <div class="col-auto">
+                <input type="date" name="checkOutDate" class="form-control mb-2" placeholder="체크아웃 날짜">
+            </div>
+            <div class="col-auto">
+                <input type="number" name="numberOfGuests" class="form-control mb-2" placeholder="인원 수" min="1">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-2">검색</button>
+            </div>
+        </div>
     </form>
-    <button class="btn btn-primary mb-3" onclick="window.location.href='http://localhost:8080/accommodation/list'">
-        전체목록
-    </button>
-    <div class="category">
+    <div class="mb-4">
+        <button class="btn btn-primary mb-2" onclick="window.location.href='http://localhost:8080/accommodation/list'">
+            전체목록
+        </button>
+        <button class="btn btn-primary mb-2" onclick="window.location.href='http://localhost:8080/accommodation/create'">
+            숙소 등록
+        </button>
+    </div>
+    <div class="category mb-4">
         <ul>
-            <li><a href="http://localhost:8080/accommodation/list/1102">호텔</a></li>
-            <li><a href="http://localhost:8080/accommodation/list/1103">모텔</a></li>
-            <li><a href="http://localhost:8080/accommodation/list/1104">여관</a></li>
-            <li><a href="http://localhost:8080/accommodation/list/1105">펜션</a></li>
-            <li><a href="http://localhost:8080/accommodation/list/1106">민박</a></li>
-            <li><a href="http://localhost:8080/accommodation/list/1107">여인숙</a></li>
+            <li><a href="http://localhost:8080/accommodation/list/호텔">호텔</a></li>
+            <li><a href="http://localhost:8080/accommodation/list/모텔">모텔</a></li>
+            <li><a href="http://localhost:8080/accommodation/list/펜션">펜션</a></li>
+            <li><a href="http://localhost:8080/accommodation/list/리조트">리조트</a></li>
         </ul>
     </div>
-    <table class="table table-bordered">
-        <thead class="thead-light">
-        <tr>
-            <th>구분</th>
-            <th>숙소명</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="accommodation : ${accommodations}">
-            <td th:text="${accommodation.themeName}">Theme Name</td>
-            <td>
-                <a th:href="@{/accommodation/detail/{accommodationName}(accommodationName=${accommodation.accommodationName})}"
-                   th:text="${accommodation.accommodationName}"
-                   class="clickable-link">Hotel Name</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-md-4 mb-4" th:each="accommodation : ${accommodations}">
+            <a th:href="@{/accommodation/detail/{id}(id=${accommodation.accommodationId})}" class="card card-link">
+                <img src="#" th:src="@{${accommodation.pictureUrl}}" class="card-img-top" alt="숙소 이미지">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${accommodation.accommodationName}">숙소명</h5>
+                    <p class="card-text"><strong>50,000원</strong></p>
+                </div>
+            </a>
+        </div>
+    </div>
 </div>
 </body>
 </html>

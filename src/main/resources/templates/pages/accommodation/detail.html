@@ -3,104 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>숙소 정보</title>
-    <!-- Bootstrap CSS -->
+    <title>숙소 상세 정보</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
     <style>
-        .container {
-            margin-top: 30px;
+        body {
+            background-color: #f8f9fa;
         }
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
         }
-        .card-header {
-            background-color: #007bff;
-            color: white;
-            text-align: center;
-            padding: 10px;
-        }
-        .table td, .table th {
-            vertical-align: middle;
-        }
-        .accommodation-link {
-            display: inline-block;
-            padding: 10px 15px;
-            color: #007bff;
-            text-decoration: none;
-            border: 1px solid #007bff;
-            border-radius: 5px;
+        .card-title {
+            font-size: 1.25rem;
             font-weight: bold;
         }
-        .accommodation-link:hover {
-            background-color: #007bff;
-            color: white;
-        }
-        .accommodation-link.disabled {
-            pointer-events: none;
-            cursor: not-allowed;
-            color: #6c757d;
-            border-color: #6c757d;
+        .card-text {
+            font-size: 1rem;
+            color: #555;
         }
         .btn-back {
-            display: inline-block;
-            margin-top: 15px;
-            color: white;
-            background-color: #28a745;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
+            background-color: #007bff;
+            color: #fff;
             text-decoration: none;
         }
         .btn-back:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+        .btn-add-room {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .btn-add-room:hover {
             background-color: #218838;
+            color: #fff;
+        }
+        .btn-reserve {
+            background-color: #ffc107;
+            color: #fff;
+        }
+        .btn-reserve:hover {
+            background-color: #e0a800;
+            color: #fff;
+        }
+        .btn-view-details {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+        .btn-view-details:hover {
+            background-color: #138496;
+            color: #fff;
+        }
+        .room-card-price {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .room-details {
+            margin-top: 10px;
+            font-size: 0.875rem;
+            color: #777;
+        }
+        .room-details p {
+            margin-bottom: 0.5rem;
+        }
+        .btn-group {
+            margin-top: 10px; /* 버튼 사이의 여백 */
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h2 class="accommodation-name" th:text="${accommodation.accommodationName}">숙소명</h2>
-        </div>
+<div class="container my-5">
+    <h1 class="my-4 text-center">숙소 상세 정보</h1>
+    <div class="card mb-4">
+        <img src="#" th:src="@{${accommodation.pictureUrl}}" class="card-img-top" alt="숙소 이미지">
         <div class="card-body">
-            <table class="table table-bordered">
-                <tbody>
-                <tr>
-                    <th>주소</th>
-                    <td class="accommodation-address" th:text="${accommodation.accommodationAddress}">주소</td>
-                </tr>
-                <tr>
-                    <th>전화번호</th>
-                    <td class="accommodation-phone" th:text="${accommodation.phoneNumber}">전화번호</td>
-                </tr>
-                <tr>
-                    <th>객실 수 및 유형</th>
-                    <td class="accommodation-rooms" th:text="${accommodation.room}">객실 수</td>
-                </tr>
-                <tr>
-                    <th>숙소 설명</th>
-                    <td class="accommodation-description" th:text="${accommodation.accommodationDescription}">숙소 설명</td>
-                </tr>
-                <tr>
-                    <th>숙소 페이지</th>
-                    <td>
-                        <a th:href="@{${accommodation.accommodationPage}}"
-                           class="accommodation-link"
-                           target="_blank"
-                           th:classappend="${accommodation.accommodationPage} == '없음' ? 'disabled' : ''"
-                           th:text="${accommodation.accommodationPage}">숙소 페이지</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <a href="http://localhost:8080/accommodation/list" class="btn-back">숙소 목록으로 돌아가기</a>
+            <h5 class="card-title" th:text="${accommodation.accommodationName}">숙소명</h5>
+            <p class="card-text"><strong>구분:</strong> <span th:text="${accommodation.themeName}">Theme Name</span></p>
+            <p class="card-text"><strong>주소:</strong> <span th:text="${accommodation.accommodationAddress}">숙소 주소</span></p>
+            <a href="http://localhost:8080/accommodation/list" class="btn btn-back">목록으로 돌아가기</a>
+        </div>
+    </div>
+
+    <h2 class="my-4">객실 정보</h2>
+    <a th:href="@{/room/create/{id}(id=${accommodation.accommodationId})}" class="btn btn-add-room mb-3">객실 추가</a>
+    <div class="row">
+        <div class="col-md-4 mb-4" th:each="room : ${rooms}">
+            <div class="card">
+                <img th:src="@{${room.roomImageUrl}}" class="card-img-top" alt="객실 이미지">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${room.roomName}">객실명</h5>
+                    <p class="card-text" th:text="${room.roomDescription}">객실 설명</p>
+                    <p class="room-card-price" th:text="${room.roomPrice} + ' 원'">₩ 가격</p>
+                    <div class="room-details">
+                        <p><span>체크인</span><strong><span th:text="${room.checkIn}">체크인 시간</span></strong>
+                            <span> ~ 체크아웃</span><strong><span th:text="${room.checkOut}">체크아웃 시간</span></strong></p>
+                        <p><span th:text="'기준 ' + ${room.roomMinCnt} + '인'">최소 인원</span>
+                            <span th:text="'/ 최대 ' + ${room.roomMaxCnt} + '인'">최대 인원</span></p>
+                    </div>
+                    <div class="d-flex justify-content-end btn-group">
+                        <a href="@{/reservation/create/{roomId}(roomId=${room.roomId})}" class="btn btn-reserve mr-2">예약하기</a>
+                        <a href="@{/room/detail/{roomId}(roomId=${room.roomId})}" class="btn btn-view-details">상세보기</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
 </body>
 </html>

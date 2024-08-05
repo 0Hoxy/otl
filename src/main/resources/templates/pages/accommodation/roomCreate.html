@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>객실 추가</title>
+    <!-- 부트스트랩 CSS 포함 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 커스텀 CSS -->
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            border-radius: 4px;
+        }
+        .form-row {
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border: none;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4 text-center">객실 추가</h1>
+    <form th:action="@{/room/create/{accommodationId}(accommodationId=${room.accommodationId})}" method="post">
+        <div class="form-group">
+            <label for="roomName">객실명</label>
+            <input type="text" class="form-control" id="roomName" name="roomName" placeholder="객실명을 입력하세요" required>
+        </div>
+        <div class="form-group">
+            <label for="roomDescription">객실 설명</label>
+            <textarea class="form-control" id="roomDescription" name="roomDescription" rows="3" placeholder="객실 설명을 입력하세요" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="roomPrice">객실 가격</label>
+            <input type="number" class="form-control" id="roomPrice" name="roomPrice" placeholder="객실 가격을 입력하세요" required>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="checkIn">체크인 시간</label>
+                <input type="time" class="form-control" id="checkIn" name="checkIn" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="checkOut">체크아웃 시간</label>
+                <input type="time" class="form-control" id="checkOut" name="checkOut" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="roomMinCnt">최소 수용 인원</label>
+                <input type="number" class="form-control" id="roomMinCnt" name="roomMinCnt" placeholder="최소 수용 인원 수" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="roomMaxCnt">최대 수용 인원</label>
+                <input type="number" class="form-control" id="roomMaxCnt" name="roomMaxCnt" placeholder="최대 수용 인원 수" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="roomImageUrl">객실 사진 URL</label>
+            <input type="url" class="form-control" id="roomImageUrl" name="roomImageUrl" placeholder="객실 사진 URL을 입력하세요" required>
+        </div>
+        <input type="hidden" name="accommodationId" value="1"> <!-- 외래키, 실제 값으로 대체 필요 -->
+        <button type="submit" class="btn btn-primary btn-block">추가</button>
+    </form>
+    <a th:href="@{/accommodation/detail/{accommodationId}(accommodationId=${room.accommodationId})}" class="btn btn-secondary btn-block mt-3">숙소 상세 페이지로 돌아가기</a>
+</div>
+</body>
+</html>
