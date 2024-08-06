@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,23 +27,12 @@ public class AccommodationController {
         return "pages/accommodation/list";
     }
 
-    // 숙소 등록 페이지 show
-    @GetMapping("/create")
-    public String showCreateAccommodation(Model model) {
-        model.addAttribute("accommodation", new Accommodation());
-        return "pages/accommodation/create";
-    }
-
-    // 숙소 등록
-    @PostMapping("/create")
-    public String createAccommodation(@RequestParam("themeName") String themeName,
-                                      @RequestParam("accommodationName") String accommodationName,
-                                      @RequestParam("accommodationAddress") String accommodationAddress,
-                                      @RequestParam("pictureUrl") String pictureUrl,
-                                      Model model) {
-
-        accommodationService.createAccommodation(themeName, accommodationName, accommodationAddress, pictureUrl);
-        return "redirect:/accommodation/list";
+    // 숙소 카테고리 구분
+    @GetMapping("/list/{themeName}")
+    public String getAccommodationsByTheme(@PathVariable String themeName, Model model) {
+        List<Accommodation> accommodations = accommodationService.getAccommodationsByThemeName(themeName);
+        model.addAttribute("accommodations", accommodations);
+        return "pages/accommodation/list";
     }
 
     // 숙소 상세페이지
@@ -57,41 +45,67 @@ public class AccommodationController {
         return "pages/accommodation/detail";
     }
 
-    // 숙소 카테고리 구분
-    @GetMapping("/list/{themeName}")
-    public String getAccommodationsByTheme(@PathVariable String themeName, Model model) {
-        List<Accommodation> accommodations = accommodationService.getAccommodationsByThemeName(themeName);
+    // 비지니스 부분
+
+    // 사업자별 숙소 리스트 => 로그인(사업자 역할) 기능과 연결 후 수정 필요함
+    @GetMapping("/business/list")
+    public String showAccommodationBy(Model model) {
+        List<Accommodation> accommodations = accommodationService.getAccommodations();
         model.addAttribute("accommodations", accommodations);
-        return "pages/accommodation/list";
+        return "pages/accommodation/business/list";
     }
 
+    // 숙소 id 를 파라미터로 받기
+    @GetMapping("/business/roomlist")
+    public String showAccommodationRoomList(@RequestParam(name = "id") long accommodationId, Model model) {
+        List<Room> rooms = roomService.getRoomListByAccommodationId(accommodationId);
+        model.addAttribute("rooms", rooms);
+        return "pages/accommodation/business/roomlist";
+    }
 
-//    // 분류코드별 숙소 리스트
-//    @GetMapping("/list/{themeCode}")
-//    public String showAccommodationThemeList(@PathVariable("themeCode") long themeCode, Model model) {
-//        List<AccommodationDTO> accommodations = accommodationService.getAccommodationsByThemeCode(themeCode);
-//        model.addAttribute("accommodations", accommodations);
-//        return "pages/accommodation/list";
-//    }
-//
-//    // 숙소 상세 페이지
-//    @GetMapping("/detail/{accommodationName}")
-//    public String showAccommodationDetail(@PathVariable("accommodationName") String accommodationName, Model model) {
-//        AccommodationDTO accommodation = accommodationService.getAccommodationByName(accommodationName);
-//        model.addAttribute("accommodation", accommodation);
-//        return "pages/accommodation/detail";
-//    }
-//
-//    // 숙소 검색
-//    @GetMapping("/search")
-//    public String showAccommodationSearch(@RequestParam(name = "searchContent", required = false) String searchContent, Model model) {
-//        if (searchContent != null && !searchContent.trim().isEmpty()) {
-//            List<AccommodationDTO> accommodations = accommodationService.searchAccommodationByName(searchContent);
-//            model.addAttribute("searchContent", searchContent);
-//            model.addAttribute("accommodations", accommodations);
-//        }
-//
-//        return "pages/accommodation/list";
-//    }
+    // 숙소 등록 페이지 show
+    @GetMapping("/business/create")
+    public String showCreateAccommodation(Model model) {
+        model.addAttribute("accommodation", new Accommodation());
+        return "pages/accommodation/business/create";
+    }
+
+    // 숙소 등록
+    @PostMapping("/business/create")
+    public String createAccommodation(@RequestParam("themeName") String themeName,
+                                      @RequestParam("accommodationName") String accommodationName,
+                                      @RequestParam("accommodationAddress") String accommodationAddress,
+                                      @RequestParam("pictureUrl") String pictureUrl,
+                                      Model model) {
+
+        accommodationService.addAccommodation(themeName, accommodationName, accommodationAddress, pictureUrl);
+        return "redirect:/accommodation/business/list";
+    }
+
+    // 숙소 수정 페이지 show
+    @GetMapping("/business/update/{accommodationId}")
+    public String showUpdateAccommodation(@PathVariable long accommodationId, Model model) {
+        Accommodation accommodation = accommodationService.getAccommodation(accommodationId);
+        model.addAttribute("accommodation", accommodation);
+        return "pages/accommodation/business/update";
+    }
+
+    @PostMapping("/business/update/{accommodationId}")
+    public String updateAccommodation(@PathVariable long accommodationId,
+                                      @RequestParam("themeName") String themeName,
+                                      @RequestParam("accommodationName") String accommodationName,
+                                      @RequestParam("accommodationAddress") String accommodationAddress,
+                                      @RequestParam("pictureUrl") String pictureUrl) {
+
+        accommodationService.editAccommodation(accommodationId, themeName, accommodationName, accommodationAddress, pictureUrl);
+        return "redirect:/accommodation/business/list";
+    }
+
+    @PostMapping("/business/delete/{accommodationId}")
+    public String deleteAccommodation(@PathVariable long accommodationId) {
+        accommodationService.deleteAccommodation(accommodationId);
+        return "redirect:/accommodation/business/list";
+    }
+
 
 }

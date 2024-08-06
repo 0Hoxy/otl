@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숙소 등록 페이지</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .registration-form {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="registration-form">
+        <h2 class="text-center">숙소 등록</h2>
+        <form th:action="@{/accommodation/business/create}" method="post">
+            <div class="form-group">
+                <label for="themeName">업소 구분</label>
+                <select class="form-control" id="themeName" name="themeName">
+                    <option value="호텔">호텔</option>
+                    <option value="펜션">펜션</option>
+                    <option value="모텔">모텔</option>
+                    <option value="리조트">리조트</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="accommodationName">숙소명</label>
+                <input type="text" class="form-control" id="accommodationName" name="accommodationName" placeholder="숙소명을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="accommodationAddress">숙소 주소</label>
+                <input type="text" class="form-control" id="accommodationAddress" name="accommodationAddress" placeholder="숙소 주소를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="pictureUrl">숙소 대표 사진 URL</label>
+                <input type="url" class="form-control" id="pictureUrl" name="pictureUrl" placeholder="이미지 URL을 입력하세요">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">등록</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

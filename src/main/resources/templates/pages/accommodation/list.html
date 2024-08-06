@@ -69,6 +69,7 @@
 </head>
 <body>
 <div class="container">
+    <a href="http://localhost:8080/accommodation/business/list">사업자 숙소관리</a>
     <h1 class="my-4 text-center">숙소 목록</h1>
     <form th:action="@{/accommodation/search}" method="get" class="search-form">
         <div class="form-row align-items-center">
@@ -101,9 +102,6 @@
     <div class="mb-4">
         <button class="btn btn-primary mb-2" onclick="window.location.href='http://localhost:8080/accommodation/list'">
             전체목록
-        </button>
-        <button class="btn btn-primary mb-2" onclick="window.location.href='http://localhost:8080/accommodation/create'">
-            숙소 등록
         </button>
     </div>
     <div class="category mb-4">

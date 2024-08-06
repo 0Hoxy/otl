@@ -14,7 +14,7 @@ public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long rootId;    // 객실 번호
+    private long roomId;    // 객실 번호
 
     private String roomName;    // 객실명
 
@@ -33,4 +33,5 @@ public class Room {
     private String roomImageUrl;    // 객실 사진
 
     private long accommodationId;   // 숙소 번호 (외래키)
+
 }

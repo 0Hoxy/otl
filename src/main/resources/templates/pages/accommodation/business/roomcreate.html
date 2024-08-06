@@ -48,7 +48,7 @@
 <body>
 <div class="container">
     <h1 class="my-4 text-center">객실 추가</h1>
-    <form th:action="@{/room/create/{accommodationId}(accommodationId=${room.accommodationId})}" method="post">
+    <form th:action="@{/accommodation/business/room/create/{accommodationId}(accommodationId=${room.accommodationId})}" method="post">
         <div class="form-group">
             <label for="roomName">객실명</label>
             <input type="text" class="form-control" id="roomName" name="roomName" placeholder="객실명을 입력하세요" required>
@@ -88,7 +88,7 @@
         <input type="hidden" name="accommodationId" value="1"> <!-- 외래키, 실제 값으로 대체 필요 -->
         <button type="submit" class="btn btn-primary btn-block">추가</button>
     </form>
-    <a th:href="@{/accommodation/detail/{accommodationId}(accommodationId=${room.accommodationId})}" class="btn btn-secondary btn-block mt-3">숙소 상세 페이지로 돌아가기</a>
+    <a th:href="@{/accommodation/business/roomlist(id=${room.accommodationId})}" class="btn btn-secondary btn-block mt-3">뒤로가기</a>
 </div>
 </body>
 </html>

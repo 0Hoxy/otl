@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/room")
+@RequestMapping("/accommodation/business/room")
 public class RoomController {
 
     private final RoomService roomService;
@@ -19,14 +19,45 @@ public class RoomController {
         Room room = new Room();
         room.setAccommodationId(accommodationId);
         model.addAttribute("room", room);
-        return "pages/accommodation/roomCreate";
+        return "pages/accommodation/business/roomcreate";
     }
 
     @PostMapping("/create/{accommodationId}")
     public String createRoom(@PathVariable("accommodationId") long accommodationId,
                              @ModelAttribute Room room) {
         room.setAccommodationId(accommodationId);
-        roomService.createRoom(room);
-        return "redirect:/accommodation/detail/" + accommodationId; // 숙소 상세 페이지로 리다이렉트
+        roomService.addRoom(room);
+        return "redirect:/accommodation/business/roomlist?id=" + accommodationId; // 숙소 상세 페이지로 리다이렉트
+    }
+
+    @GetMapping("/update/{roomId}")
+    public String showUpdateRoom(@PathVariable("roomId") long roomId, Model model) {
+        Room room = roomService.getRoomById(roomId);
+        model.addAttribute("room", room);
+        return "pages/accommodation/business/roomupdate";
+    }
+
+    @PostMapping("/update/{roomId}")
+    public String UpdateRoom(@PathVariable("roomId") long roomId,
+                             @RequestParam("roomName") String roomName,
+                             @RequestParam("roomDescription") String roomDescription,
+                             @RequestParam("roomPrice") String roomPrice,
+                             @RequestParam("checkIn") String checkIn,
+                             @RequestParam("checkOut") String checkOut,
+                             @RequestParam("roomMinCnt") long roomMinCnt,
+                             @RequestParam("roomMaxCnt") long roomMaxCnt,
+                             @RequestParam("roomImageUrl") String roomImageUrl,
+                             @RequestParam("accommodationId") long accommodationId) {
+
+        roomService.editRoom(roomId, roomName, roomDescription, roomPrice, checkIn, checkOut, roomMinCnt, roomMaxCnt, roomImageUrl, accommodationId);
+
+        return "redirect:/accommodation/business/roomlist?id=" + accommodationId;
+    }
+
+    @PostMapping("/delete/{roomId}")
+    public String deleteRoom(@PathVariable("roomId") long roomId) {
+        long accommodationId = roomService.getAccommodationIdByRoomId(roomId);
+        roomService.deleteRoomById(roomId);
+        return "redirect:/accommodation/business/roomlist?id=" + accommodationId;
     }
 }

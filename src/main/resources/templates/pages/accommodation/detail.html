@@ -86,7 +86,6 @@
     </div>
 
     <h2 class="my-4">객실 정보</h2>
-    <a th:href="@{/room/create/{id}(id=${accommodation.accommodationId})}" class="btn btn-add-room mb-3">객실 추가</a>
     <div class="row">
         <div class="col-md-4 mb-4" th:each="room : ${rooms}">
             <div class="card">

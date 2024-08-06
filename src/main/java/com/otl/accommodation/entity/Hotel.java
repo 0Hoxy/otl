@@ -3,8 +3,8 @@ package com.otl.accommodation.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Table(name = "hotel")
-@Data
+//@Table(name = "hotel")
+//@Data
 @Entity
 public class Hotel {
 
