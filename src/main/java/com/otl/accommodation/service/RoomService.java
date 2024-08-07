@@ -1,10 +1,15 @@
 package com.otl.accommodation.service;
 
+import com.otl.accommodation.dto.SearchRequestDTO;
 import com.otl.accommodation.entity.Accommodation;
 import com.otl.accommodation.entity.Room;
 import com.otl.accommodation.repository.AccommodationRepository;
 import com.otl.accommodation.repository.RoomRepository;
+import com.otl.accommodation.specification.AccommodationSpecification;
+import com.otl.accommodation.specification.RoomSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,5 +63,11 @@ public class RoomService {
 
     public void deleteRoomById(long roomId) {
         roomRepository.deleteById(roomId);
+    }
+
+    // 숙소 검색 기능
+    public List<Room> getRoomsByAccommodationAndPeopleCnt(long accommodationId, Long peopleCnt) {
+        Specification<Room> spec = RoomSpecification.findRoomForAccommodationAndPeopleCnt(accommodationId, peopleCnt);
+        return roomRepository.findAll(spec);
     }
 }

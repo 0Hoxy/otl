@@ -83,7 +83,7 @@
                 </select>
             </div>
             <div class="col-auto">
-                <input type="text" name="searchContent" class="form-control mb-2" placeholder="검색 내용 입력" required>
+                <input type="text" name="searchContent" class="form-control mb-2" placeholder="지역 또는 숙소명 검색">
             </div>
             <div class="col-auto">
                 <input type="date" id="checkInDate" name="checkInDate" class="form-control mb-2" placeholder="체크인 날짜" required>
@@ -114,7 +114,7 @@
     </div>
     <div class="row">
         <div class="col-md-4 mb-4" th:each="accommodation : ${accommodations}">
-            <a th:href="@{/accommodation/detail/{id}(id=${accommodation.accommodationId})}" class="card card-link">
+            <a th:href="@{/accommodation/detail/{id}(id=${accommodation.accommodationId}, checkInDate=${param.checkInDate}, checkOutDate=${param.checkOutDate}, peopleCnt=${param.peopleCnt})}" class="card card-link">
                 <img src="#" th:src="@{${accommodation.pictureUrl}}" class="card-img-top" alt="숙소 이미지">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${accommodation.accommodationName}">숙소명</h5>

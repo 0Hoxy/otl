@@ -23,7 +23,7 @@ public class AccommodationSpecification {
         };
     }
 
-    public static Specification<Accommodation> hasRoomForPeopleCnt(long peopleCnt) {
+    public static Specification<Accommodation> hasRoomForPeopleCnt(Long peopleCnt) {
         return (root, query, criteriaBuilder) -> {
             Join<Accommodation, Room> roomJoin = root.join("rooms", JoinType.LEFT);
 

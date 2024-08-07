@@ -17,5 +17,5 @@ public class SearchRequestDTO {
 
     private LocalDate checkOutDate;
 
-    private long peopleCnt;
+    private Long peopleCnt;
 }

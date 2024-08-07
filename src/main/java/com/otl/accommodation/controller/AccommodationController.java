@@ -46,11 +46,29 @@ public class AccommodationController {
 
     // 숙소 상세페이지
     @GetMapping("/detail/{accommodationId}")
-    public String showAccommodationDetail(@PathVariable long accommodationId, Model model) {
+    public String showAccommodationDetail(@PathVariable long accommodationId,
+                                          @RequestParam(value = "checkInDate", required = false) String checkInDate,
+                                          @RequestParam(value = "checkOutDate", required = false) String checkOutDate,
+                                          @RequestParam(value = "peopleCnt", required = false) Long peopleCnt,
+                                          Model model) {
         Accommodation accommodation = accommodationService.getAccommodation(accommodationId);
-        List<Room> rooms = roomService.getRoomListByAccommodationId(accommodationId);
+//        List<Room> rooms = roomService.getRoomListByAccommodationId(accommodationId);
+
+        List<Room> rooms;
+
+        if (peopleCnt != null) {
+            rooms = roomService.getRoomsByAccommodationAndPeopleCnt(accommodationId, peopleCnt);
+        } else {
+            rooms = roomService.getRoomListByAccommodationId(accommodationId);
+        }
+
         model.addAttribute("accommodation", accommodation);
         model.addAttribute("rooms", rooms);
+
+        // 체크인, 체크아웃 날짜와 인원 수 모델에 추가
+        model.addAttribute("checkInDate", checkInDate);
+        model.addAttribute("checkOutDate", checkOutDate);
+        model.addAttribute("peopleCnt", peopleCnt);
         return "pages/accommodation/detail";
     }
 

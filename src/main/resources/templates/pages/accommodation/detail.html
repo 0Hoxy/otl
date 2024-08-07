@@ -70,6 +70,22 @@
         .btn-group {
             margin-top: 10px; /* 버튼 사이의 여백 */
         }
+        .filter-section {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .filter-section label {
+            font-weight: bold;
+        }
+        .filter-section .form-group {
+            margin-bottom: 1rem;
+        }
+        .filter-section .form-control {
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -83,6 +99,26 @@
             <p class="card-text"><strong>주소:</strong> <span th:text="${accommodation.accommodationAddress}">숙소 주소</span></p>
             <a href="http://localhost:8080/accommodation/list" class="btn btn-back">목록으로 돌아가기</a>
         </div>
+    </div>
+
+    <div class="filter-section">
+        <form id="searchForm" method="get" action="#">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="checkInDate">체크인 날짜</label>
+                    <input type="date" class="form-control" id="checkInDate" name="checkInDate" th:value="${checkInDate}" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="checkOutDate">체크아웃 날짜</label>
+                    <input type="date" class="form-control" id="checkOutDate" name="checkOutDate" th:value="${checkOutDate}" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="peopleCnt">인원수</label>
+                    <input type="number" class="form-control" id="peopleCnt" name="peopleCnt" min="1" th:value="${peopleCnt}" placeholder="인원수 선택" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">검색</button>
+        </form>
     </div>
 
     <h2 class="my-4">객실 정보</h2>
@@ -109,5 +145,37 @@
         </div>
     </div>
 </div>
+
+<!-- 자바스크립트 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkInDateInput = document.getElementById('checkInDate');
+        const checkOutDateInput = document.getElementById('checkOutDate');
+
+        // 오늘 날짜를 구합니다.
+        const today = new Date().toISOString().split('T')[0];
+
+        // 체크인 날짜의 기본 최소 값을 오늘 날짜로 설정합니다.
+        checkInDateInput.setAttribute('min', today);
+
+        // 체크인 날짜의 변경 이벤트를 처리합니다.
+        checkInDateInput.addEventListener('change', function() {
+            // 선택한 체크인 날짜를 가져옵니다.
+            const checkInDate = checkInDateInput.value;
+
+            // 체크인 날짜가 선택되지 않았거나 잘못된 날짜일 경우 기본값을 설정합니다.
+            if (!checkInDate) {
+                checkOutDateInput.setAttribute('min', today); // 오늘 날짜를 기본값으로 설정
+                return;
+            }
+
+            // 체크아웃 날짜의 최소 값을 체크인 날짜로 설정합니다.
+            checkOutDateInput.setAttribute('min', checkInDate);
+        });
+
+        // 체크아웃 날짜의 기본 최소 값을 체크인 날짜의 현재 값으로 설정합니다.
+        checkOutDateInput.setAttribute('min', today);
+    });
+</script>
 </body>
 </html>
