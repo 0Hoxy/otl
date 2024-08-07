@@ -66,7 +66,7 @@ public class OrderService {
             }
             orderHistDtos.add(orderHistDto);
         }
-        return new PageImpl<OrderHistDto>(orderHistDtos, pageable, totalCount);
+        return new PageImpl<>(orderHistDtos, pageable, totalCount);
     }
 
     @Transactional(readOnly = true)
@@ -75,10 +75,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
         User savedUser = order.getUser();
 
-        if (!StringUtils.equals(currentUser.getEmail(), savedUser.getEmail())) {
-            return false;
-        }
-        return true;
+        return StringUtils.equals(currentUser.getEmail(), savedUser.getEmail());
     }
 
     public void cancelOrder(Long orderId) {
