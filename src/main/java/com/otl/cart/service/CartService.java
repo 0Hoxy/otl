@@ -79,18 +79,18 @@ public class CartService {
     }
 
     @Transactional(readOnly = true)
-    public boolean validateCartItem(Long cartItemId, String email) {
+    public boolean validateCartItem(Long cartItemId, String email){
         User currentUser = userRepository.findByEmail(email);
-        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
-        User savedUser = cartItem.getCart().getUser();
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        User savedMember = cartItem.getCart().getUser();
 
-        if(StringUtils.equals(currentUser.getEmail(), savedUser.getEmail())) {
+        if(!StringUtils.equals(currentUser.getEmail(), savedMember.getEmail())){
             return false;
         }
 
         return true;
     }
-
     public void updateCartItemCount(Long cartItemId, int count) {
         CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
 
