@@ -3,6 +3,7 @@ package com.otl.order;
 import com.otl.items.constant.ItemSellStatus;
 import com.otl.items.entity.Item;
 import com.otl.items.repository.ItemRepository;
+import com.otl.order.constant.OrderStatus;
 import com.otl.order.dto.OrderDto;
 import com.otl.order.entity.Order;
 import com.otl.order.entity.OrderItem;
@@ -69,5 +70,24 @@ class OrderServiceTest {
         List<OrderItem> orderItems = order.getOrderItems();
         int totalPrice = orderDto.getCount() * item.getPrice();
         assertEquals(totalPrice, order.getTotalPrice());
+    }
+
+    @Test
+    @DisplayName("주문 취소 테스트")
+    public void cancelOrder() {
+        Item item = saveItem();
+        User user = saveUser();
+
+        OrderDto orderDto = new OrderDto();
+        orderDto.setCount(10);
+        orderDto.setItemId(item.getId());
+        Long orderId = orderService.order(orderDto, user.getEmail());
+
+        Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+        orderService.cancelOrder(orderId);
+
+        assertEquals(OrderStatus.CANCEL, order.getOrderStatus());
+        assertEquals(100, item.getStockNumber());
+
     }
 }
