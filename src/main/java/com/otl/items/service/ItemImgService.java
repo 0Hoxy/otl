@@ -8,8 +8,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +55,15 @@ public class ItemImgService {
             String imgUrl = "/images/item/" + imgName;
             savedItemImg.updateItemImg(oriImgName, imgName, imgUrl);
         }
+    }
+
+    public void deleteItemImg(ItemImg itemImg) throws Exception {
+        // 실제 이미지 파일 삭제
+        if (StringUtils.hasText(itemImg.getImgName())) {
+            fileService.deleteFile(itemImgLocation + "/" + itemImg.getImgName());
+        }
+
+        // 데이터베이스에서 이미지 정보 삭제
+        itemImgRepository.delete(itemImg);
     }
 }

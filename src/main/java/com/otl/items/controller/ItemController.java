@@ -102,4 +102,20 @@ public class ItemController {
         model.addAttribute("item", itemFormDto);
         return "pages/item/itemDtl";
     }
+
+    @PostMapping("/admin/item/{itemId}/delete")
+    public String deleteItem(@PathVariable("itemId") Long itemId, Model model) {
+        try {
+            itemService.deleteItem(itemId);
+            return "redirect:/admin/items";
+        } catch (EntityNotFoundException e) {
+            log.error("Item not found for deletion", e);
+            model.addAttribute("errorMessage", "삭제할 상품을 찾을 수 없습니다.");
+            return "pages/item/itemMng";
+        } catch (Exception e) {
+            log.error("Error deleting item", e);
+            model.addAttribute("errorMessage", "상품 삭제 중 에러가 발생하였습니다.");
+            return "pages/item/itemMng";
+        }
+    }
 }

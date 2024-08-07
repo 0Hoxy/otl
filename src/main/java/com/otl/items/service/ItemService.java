@@ -81,13 +81,30 @@ public class ItemService {
         return item.getId();
     }
 
-    @Transactional(readOnly = true)
-    public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
-        return itemRepository.getAdminItemPage(itemSearchDto, pageable);
+    public void deleteItem(Long itemId) throws Exception {
+        // 상품 조회
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException("Item not found"));
+
+        // 상품 이미지 조회
+        List<ItemImg> itemImgs = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
+
+        // 이미지 파일 삭제
+        for (ItemImg img : itemImgs) {
+            itemImgService.deleteItemImg(img);
+        }
+
+        // 상품 삭제
+        itemRepository.delete(item);
     }
 
-    @Transactional(readOnly = true)
-    public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
-        return itemRepository.getMainItemPage(itemSearchDto, pageable);
-    }
+@Transactional(readOnly = true)
+public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+    return itemRepository.getAdminItemPage(itemSearchDto, pageable);
+}
+
+@Transactional(readOnly = true)
+public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+    return itemRepository.getMainItemPage(itemSearchDto, pageable);
+}
 }
