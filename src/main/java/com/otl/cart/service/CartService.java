@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,5 +71,26 @@ public class CartService {
         cartDetailDtoList = cartItemRepository.findCartDetailDtoList(cart.getId());
         return cartDetailDtoList;
     }
+
+    @Transactional(readOnly = true)
+    public boolean validateCartItem(Long cartItemId, String email) {
+        User currentUser = userRepository.findByEmail(email);
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
+        User savedUser = cartItem.getCart().getUser();
+
+        if(StringUtils.equals(currentUser.getEmail(), savedUser.getEmail())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void updateCartItemCount(Long cartItemId, int count) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
+
+        cartItem.updateCount(count);
+    }
+
+
 }
 
