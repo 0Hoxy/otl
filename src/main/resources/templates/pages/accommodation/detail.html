@@ -137,7 +137,7 @@
                             <span th:text="'/ 최대 ' + ${room.roomMaxCnt} + '인'">최대 인원</span></p>
                     </div>
                     <div class="d-flex justify-content-end btn-group">
-                        <a href="@{/reservation/create/{roomId}(roomId=${room.roomId})}" class="btn btn-reserve mr-2">예약하기</a>
+                        <a href="@{/reservation/create/{roomId}(roomId=${room.roomId})}" class="btn btn-reserve mr-2">장바구니</a>
                         <a href="@{/room/detail/{roomId}(roomId=${room.roomId})}" class="btn btn-view-details">상세보기</a>
                     </div>
                 </div>
