@@ -1,11 +1,10 @@
 package com.otl.cart.repository;
 
-import com.otl.cart.entity.Cart;
 import com.otl.cart.entity.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CartRepository extends JpaRepository<Cart, Long> {
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
-    Cart findByUserId(Long userId);
+    CartItem findByCartIdAndItemId(Long cartId, Long itemId);
 
 }

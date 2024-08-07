@@ -25,4 +25,16 @@ public class CartItem {
     private Item item;
 
     private int count; //같은 상품을 장바구니에 몇 개 담을지 저장한다.
+
+    public static CartItem createCartItem(Cart cart, Item item, int count) {
+        CartItem cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setItem(item);
+        cartItem.setCount(count);
+        return cartItem;
+    }
+
+    public void addCount(int count) {
+        this.count += count;
+    }
 }
