@@ -102,10 +102,11 @@ public class AccommodationController {
     public String createAccommodation(@RequestParam("themeName") String themeName,
                                       @RequestParam("accommodationName") String accommodationName,
                                       @RequestParam("accommodationAddress") String accommodationAddress,
+                                      @RequestParam("accommodationDescription") String accommdationDescription,
                                       @RequestParam("pictureUrl") String pictureUrl,
                                       Model model) {
 
-        accommodationService.addAccommodation(themeName, accommodationName, accommodationAddress, pictureUrl);
+        accommodationService.addAccommodation(themeName, accommodationName, accommodationAddress, accommdationDescription, pictureUrl);
         return "redirect:/accommodation/business/list";
     }
 
@@ -122,9 +123,10 @@ public class AccommodationController {
                                       @RequestParam("themeName") String themeName,
                                       @RequestParam("accommodationName") String accommodationName,
                                       @RequestParam("accommodationAddress") String accommodationAddress,
+                                      @RequestParam("accommodationDescription") String accommdationDescription,
                                       @RequestParam("pictureUrl") String pictureUrl) {
 
-        accommodationService.editAccommodation(accommodationId, themeName, accommodationName, accommodationAddress, pictureUrl);
+        accommodationService.editAccommodation(accommodationId, themeName, accommodationName, accommodationAddress, accommdationDescription, pictureUrl);
         return "redirect:/accommodation/business/list";
     }
 

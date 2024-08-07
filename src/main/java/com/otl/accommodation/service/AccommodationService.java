@@ -22,12 +22,13 @@ public class AccommodationService {
     }
 
     // 숙소 생성
-    public void addAccommodation(String themeName,  String accommodationName, String accommodationAddress, String pictureUrl) {
-        Accommodation accommodation = new Accommodation(themeName, accommodationName, accommodationAddress, pictureUrl);
+    public void addAccommodation(String themeName,  String accommodationName, String accommodationAddress, String accommdationDescription, String pictureUrl) {
+        Accommodation accommodation = new Accommodation(themeName, accommodationName, accommodationAddress, accommdationDescription, pictureUrl);
 
         accommodation.setThemeName(themeName);
         accommodation.setAccommodationName(accommodationName);
         accommodation.setAccommodationAddress(accommodationAddress);
+        accommodation.setAccommdationDescription(accommdationDescription);
         accommodation.setPictureUrl(pictureUrl);
 
         accommodationRepository.save(accommodation);
@@ -44,12 +45,13 @@ public class AccommodationService {
     }
 
     // 숙소 수정
-    public void editAccommodation(long accommodationId, String themeName,  String accommodationName, String accommodationAddress, String pictureUrl) {
+    public void editAccommodation(long accommodationId, String themeName,  String accommodationName, String accommodationAddress, String accommdationDescription, String pictureUrl) {
         Accommodation accommodation = accommodationRepository.findById(accommodationId).get();
 
         accommodation.setThemeName(themeName);
         accommodation.setAccommodationName(accommodationName);
         accommodation.setAccommodationAddress(accommodationAddress);
+        accommodation.setAccommdationDescription(accommdationDescription);
         accommodation.setPictureUrl(pictureUrl);
 
         accommodationRepository.save(accommodation);

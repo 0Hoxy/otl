@@ -46,6 +46,10 @@
                 <input type="text" class="form-control" id="accommodationAddress" name="accommodationAddress" th:field="*{accommodationAddress}" placeholder="숙소 주소를 입력하세요">
             </div>
             <div class="form-group">
+                <label for="accommodationDescription">객실 설명</label>
+                <textarea class="form-control" id="accommodationDescription" name="accommodationDescription" rows="3" placeholder="숙소 설명을 입력하세요"></textarea>
+            </div>
+            <div class="form-group">
                 <label for="pictureUrl">숙소 대표 사진 URL</label>
                 <input type="url" class="form-control" id="pictureUrl" name="pictureUrl" th:field="*{pictureUrl}" placeholder="이미지 URL을 입력하세요">
             </div>
