@@ -1,5 +1,6 @@
 package com.otl.cart.service;
 
+import com.otl.cart.dto.CartDetailDto;
 import com.otl.cart.dto.CartItemDto;
 import com.otl.cart.entity.Cart;
 import com.otl.cart.entity.CartItem;
@@ -13,6 +14,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Log4j2
@@ -29,7 +34,7 @@ public class CartService {
         User user = userRepository.findByEmail(email);
 
         Cart cart = cartRepository.findByUserId(user.getId());
-        if(cart == null) {
+        if (cart == null) {
             cart = Cart.createCart(user);
             cartRepository.save(cart);
         }
@@ -45,4 +50,25 @@ public class CartService {
             return cartItem.getId();
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<CartDetailDto> getCartList(String email) {
+
+        List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
+
+        User user = userRepository.findByEmail(email);
+
+        //로그인한 유저의 장바구니 엔티티 조회
+        Cart cart = cartRepository.findByUserId(user.getId());
+
+        //카드에 상품이 하나도 안담겼을 경우에는 장바구니에 엔티티가 없으므로 빈 리스트를 반환한다.
+        if (cart == null) {
+            return cartDetailDtoList;
+        }
+
+        //장바구니에 담겨 있는 상품 정보 조회
+        cartDetailDtoList = cartItemRepository.findCartDetailDtoList(cart.getId());
+        return cartDetailDtoList;
+    }
 }
+

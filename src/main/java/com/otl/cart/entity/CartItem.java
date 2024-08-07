@@ -1,5 +1,6 @@
 package com.otl.cart.entity;
 
+import com.otl.common.Entity.BaseEntity;
 import com.otl.items.entity.Item;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "cart_item")
-public class CartItem {
+public class CartItem extends BaseEntity {
 
     @Id
     @GeneratedValue
