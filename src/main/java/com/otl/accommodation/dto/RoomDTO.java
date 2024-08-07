@@ -1,8 +1,5 @@
 package com.otl.accommodation.dto;
 
-import com.otl.accommodation.entity.Accommodation;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
