@@ -1,5 +1,8 @@
 package com.otl.accommodation.dto;
 
+import com.otl.accommodation.entity.Accommodation;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
@@ -17,4 +20,5 @@ public class RoomDTO {
     private long roomMinCnt;       // 최소 수용 인원 수
 
     private long roomMaxCnt;       // 최대 수용 인원 수
+
 }

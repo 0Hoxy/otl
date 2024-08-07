@@ -83,16 +83,16 @@
                 </select>
             </div>
             <div class="col-auto">
-                <input type="text" name="searchContent" class="form-control mb-2" placeholder="검색 내용 입력">
+                <input type="text" name="searchContent" class="form-control mb-2" placeholder="검색 내용 입력" required>
             </div>
             <div class="col-auto">
-                <input type="date" name="checkInDate" class="form-control mb-2" placeholder="체크인 날짜">
+                <input type="date" id="checkInDate" name="checkInDate" class="form-control mb-2" placeholder="체크인 날짜" required>
             </div>
             <div class="col-auto">
-                <input type="date" name="checkOutDate" class="form-control mb-2" placeholder="체크아웃 날짜">
+                <input type="date" id="checkOutDate" name="checkOutDate" class="form-control mb-2" placeholder="체크아웃 날짜" required>
             </div>
             <div class="col-auto">
-                <input type="number" name="numberOfGuests" class="form-control mb-2" placeholder="인원 수" min="1">
+                <input type="number" name="peopleCnt" class="form-control mb-2" placeholder="인원 수" min="1" required>
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary mb-2">검색</button>
@@ -124,5 +124,37 @@
         </div>
     </div>
 </div>
+
+<!-- 자바스크립트 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkInDateInput = document.getElementById('checkInDate');
+        const checkOutDateInput = document.getElementById('checkOutDate');
+
+        // 오늘 날짜를 구합니다.
+        const today = new Date().toISOString().split('T')[0];
+
+        // 체크인 날짜의 기본 최소 값을 오늘 날짜로 설정합니다.
+        checkInDateInput.setAttribute('min', today);
+
+        // 체크인 날짜의 변경 이벤트를 처리합니다.
+        checkInDateInput.addEventListener('change', function() {
+            // 선택한 체크인 날짜를 가져옵니다.
+            const checkInDate = checkInDateInput.value;
+
+            // 체크인 날짜가 선택되지 않았거나 잘못된 날짜일 경우 기본값을 설정합니다.
+            if (!checkInDate) {
+                checkOutDateInput.setAttribute('min', today); // 오늘 날짜를 기본값으로 설정
+                return;
+            }
+
+            // 체크아웃 날짜의 최소 값을 체크인 날짜로 설정합니다.
+            checkOutDateInput.setAttribute('min', checkInDate);
+        });
+
+        // 체크아웃 날짜의 기본 최소 값을 체크인 날짜의 현재 값으로 설정합니다.
+        checkOutDateInput.setAttribute('min', today);
+    });
+</script>
 </body>
 </html>

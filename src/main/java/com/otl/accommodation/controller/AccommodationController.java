@@ -1,5 +1,6 @@
 package com.otl.accommodation.controller;
 
+import com.otl.accommodation.dto.SearchRequestDTO;
 import com.otl.accommodation.entity.Accommodation;
 import com.otl.accommodation.entity.Room;
 import com.otl.accommodation.service.AccommodationService;
@@ -23,6 +24,14 @@ public class AccommodationController {
     @GetMapping("/list")
     public String showAccommodation(Model model) {
         List<Accommodation> accommodations = accommodationService.getAccommodations();
+        model.addAttribute("accommodations", accommodations);
+        return "pages/accommodation/list";
+    }
+
+    // 숙소 검색
+    @GetMapping("/search")
+    public String showAccommodationSearch(SearchRequestDTO search, Model model) {
+        List<Accommodation> accommodations = accommodationService.searchAccommodation(search);
         model.addAttribute("accommodations", accommodations);
         return "pages/accommodation/list";
     }

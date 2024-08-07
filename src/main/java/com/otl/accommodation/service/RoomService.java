@@ -1,6 +1,8 @@
 package com.otl.accommodation.service;
 
+import com.otl.accommodation.entity.Accommodation;
 import com.otl.accommodation.entity.Room;
+import com.otl.accommodation.repository.AccommodationRepository;
 import com.otl.accommodation.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,12 +15,14 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
 
+    private final AccommodationRepository accommodationRepository;
+
     public Room addRoom(Room room) {
         return roomRepository.save(room);
     }
 
     public List<Room> getRoomListByAccommodationId(long accommodationId) {
-        return roomRepository.findByAccommodationId(accommodationId);
+        return roomRepository.findByAccommodation_AccommodationId(accommodationId);
     }
 
     public Room getRoomById(long roomId) {
@@ -27,19 +31,23 @@ public class RoomService {
 
     public void editRoom(long roomId, String roomName, String roomDescription,
                          String roomPrice, String checkIn, String checkOut,
-                         long roomMinCnt, long roomMaxCnt, String roomImageUrl, long accommodationId) {
+                         long roomMinCnt, long roomMaxCnt, String roomImageUrl) {
 
         Room room = roomRepository.findById(roomId).orElse(null);
 
-        room.setRoomName(roomName);
-        room.setRoomDescription(roomDescription);
-        room.setRoomPrice(roomPrice);
-        room.setCheckIn(checkIn);
-        room.setCheckOut(checkOut);
-        room.setRoomMinCnt(roomMinCnt);
-        room.setRoomMaxCnt(roomMaxCnt);
-        room.setRoomImageUrl(roomImageUrl);
-        room.setAccommodationId(accommodationId);
+        if (room != null) {
+            room.setRoomName(roomName);
+            room.setRoomDescription(roomDescription);
+            room.setRoomPrice(roomPrice);
+            room.setCheckIn(checkIn);
+            room.setCheckOut(checkOut);
+            room.setRoomMinCnt(roomMinCnt);
+            room.setRoomMaxCnt(roomMaxCnt);
+            room.setRoomImageUrl(roomImageUrl);
+        } else {
+            throw new RuntimeException("룸ID " + roomId + "을 찾을 수 없습니다.");
+        }
+
 
         roomRepository.save(room);
     }

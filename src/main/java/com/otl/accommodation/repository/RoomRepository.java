@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends CrudRepository<Room, Long> {
 
-    List<Room> findByAccommodationId(long accommodationId);
+    List<Room> findByAccommodation_AccommodationId(long accommodationId);
 
-    @Query("SELECT r.accommodationId FROM Room r WHERE r.roomId = :roomId")
+    @Query("SELECT r.accommodation.accommodationId FROM Room r WHERE r.roomId = :roomId")
     long findAccommodationIdByRoomId(@Param("roomId") long roomId);
 }

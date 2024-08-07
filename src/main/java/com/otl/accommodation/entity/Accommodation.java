@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "accommodation")
 @Data
@@ -20,11 +22,12 @@ public class Accommodation {
 
     private String accommodationAddress;    // 숙소 주소
 
-    private String phoneNumber; // 숙소 번호
-
     private String themeName;   // 업소 구분
 
     private String pictureUrl; // 숙소 대표 사진
+
+    @OneToMany(mappedBy = "accommodation")
+    private List<Room> rooms;
 
     public Accommodation(String accommodationName, String accommodationAddress, String themeName, String pictureUrl) {
         this.accommodationName = accommodationName;

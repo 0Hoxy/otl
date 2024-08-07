@@ -18,6 +18,7 @@ public class Room {
 
     private String roomName;    // 객실명
 
+    @Column(length = 1000)
     private String roomDescription; // 객실 설명
 
     private String roomPrice;   // 객실 가격
@@ -32,6 +33,7 @@ public class Room {
 
     private String roomImageUrl;    // 객실 사진
 
-    private long accommodationId;   // 숙소 번호 (외래키)
-
+    @ManyToOne
+    @JoinColumn(name = "accommodation_id")
+    private Accommodation accommodation; // 숙소 번호 (외래키)
 }
