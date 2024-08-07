@@ -1,11 +1,13 @@
 package com.otl.user.config;
 
+import com.otl.items.config.CustomAuthenticationEntryPoint;
 import com.otl.user.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,12 +26,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
-                        // 정적 리소스에 대한 접근 설정
-                        .requestMatchers("/js/**", "/css/**", "/images/**").permitAll()
                         // 공개 페이지에 대한 접근 설정
-                        .requestMatchers("/", "/user/register", "/user/login").permitAll()
+                        .requestMatchers("/", "/user/**","/item/**").permitAll()
                         //여기에 비회원들도 입장가능한 페이지 추가
                         .requestMatchers("/h2-console/**").permitAll()
+                        //ADMIN만 접근 가능
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -49,6 +51,9 @@ public class SecurityConfig {
                 )
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                )
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 );
 
         return http.build();
@@ -66,11 +71,15 @@ public class SecurityConfig {
         return authConfiguration.getAuthenticationManager();
     }
 
-//3.x 버전 미만에서만 사용됐다.
-    /*@Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
-                .passwordEncoder(passwordEncoder());
-    }*/
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web -> web.ignoring()
+                .requestMatchers(
+                        new AntPathRequestMatcher("/js/**"),
+                        new AntPathRequestMatcher("/css/**"),
+                        new AntPathRequestMatcher("/images/**"),
+                        new AntPathRequestMatcher("/webjars/**")
+                ));
+    }
 
 }
