@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "room")
 @Data
@@ -31,9 +33,20 @@ public class Room {
 
     private long roomMaxCnt;       // 최대 수용 인원 수
 
-    private String roomImageUrl;    // 객실 사진
-
     @ManyToOne
     @JoinColumn(name = "accommodation_id")
     private Accommodation accommodation; // 숙소 번호 (외래키)
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
+    private List<RoomImg> roomImgs;
+
+    public Room(String roomName, String roomDescription, String roomPrice, String checkIn, String checkOut, long roomMinCnt, long roomMaxCnt) {
+        this.roomName = roomName;
+        this.roomDescription = roomDescription;
+        this.roomPrice = roomPrice;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.roomMinCnt = roomMinCnt;
+        this.roomMaxCnt = roomMaxCnt;
+    }
 }

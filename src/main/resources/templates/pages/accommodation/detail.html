@@ -92,7 +92,24 @@
 <div class="container my-5">
     <h1 class="my-4 text-center">숙소 상세 정보</h1>
     <div class="card mb-4">
-        <img src="#" th:src="@{${accommodation.pictureUrl}}" class="card-img-top" alt="숙소 이미지">
+        <!-- 이미지 Carousel 시작 -->
+        <div th:id="'carousel-' + ${accommodation.accommodationId}" class="carousel slide property-img" data-ride="carousel">
+            <div class="carousel-inner">
+                <div th:each="img, iterStat : ${accommodation.accommodationImgs}"
+                     class="carousel-item" th:classappend="${iterStat.index == 0} ? 'active' : ''">
+                    <img th:src="@{${img.accommodationImgPath}}" class="d-block w-100" alt="Accommodation Image">
+                </div>
+            </div>
+            <a class="carousel-control-prev" th:href="'#carousel-' + ${accommodation.accommodationId}" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" th:href="'#carousel-' + ${accommodation.accommodationId}" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        <!-- 이미지 Carousel 끝 -->
         <div class="card-body">
             <h5 class="card-title" th:text="${accommodation.accommodationName}">숙소명</h5>
             <p class="card-text"><strong>구분:</strong> <span th:text="${accommodation.themeName}">Theme Name</span></p>
@@ -125,7 +142,24 @@
     <div class="row">
         <div class="col-md-4 mb-4" th:each="room : ${rooms}">
             <div class="card">
-                <img th:src="@{${room.roomImageUrl}}" class="card-img-top" alt="객실 이미지">
+                <!-- 이미지 Carousel 시작 -->
+                <div th:id="'carousel-' + ${room.roomId}" class="carousel slide property-img" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div th:each="img, iterStat : ${room.roomImgs}"
+                             class="carousel-item" th:classappend="${iterStat.index == 0} ? 'active' : ''">
+                            <img th:src="@{${img.roomImgPath}}" class="d-block w-100" alt="Room Image">
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" th:href="'#carousel-' + ${room.roomId}" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" th:href="'#carousel-' + ${room.roomId}" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+                <!-- 이미지 Carousel 끝 -->
                 <div class="card-body">
                     <h5 class="card-title" th:text="${room.roomName}">객실명</h5>
                     <p class="card-text" th:text="${room.roomDescription}">객실 설명</p>
@@ -177,5 +211,11 @@
         checkOutDateInput.setAttribute('min', today);
     });
 </script>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

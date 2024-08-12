@@ -2,15 +2,25 @@ package com.otl.accommodation.controller;
 
 import com.otl.accommodation.dto.SearchRequestDTO;
 import com.otl.accommodation.entity.Accommodation;
+import com.otl.accommodation.entity.AccommodationImg;
 import com.otl.accommodation.entity.Room;
+import com.otl.accommodation.repository.AccommodationImgRepository;
+import com.otl.accommodation.repository.AccommodationRepository;
+import com.otl.accommodation.service.AccommodationImgService;
 import com.otl.accommodation.service.AccommodationService;
 import com.otl.accommodation.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,6 +29,9 @@ public class AccommodationController {
 
     private final AccommodationService accommodationService;
     private final RoomService roomService;
+    private final AccommodationImgService accommodationImgService;
+    private final AccommodationImgRepository accommodationImgRepository;
+    private final AccommodationRepository accommodationRepository;
 
     // 전체 숙소 리스트
     @GetMapping("/list")
@@ -52,8 +65,6 @@ public class AccommodationController {
                                           @RequestParam(value = "peopleCnt", required = false) Long peopleCnt,
                                           Model model) {
         Accommodation accommodation = accommodationService.getAccommodation(accommodationId);
-//        List<Room> rooms = roomService.getRoomListByAccommodationId(accommodationId);
-
         List<Room> rooms;
 
         if (peopleCnt != null) {
@@ -102,19 +113,37 @@ public class AccommodationController {
     public String createAccommodation(@RequestParam("themeName") String themeName,
                                       @RequestParam("accommodationName") String accommodationName,
                                       @RequestParam("accommodationAddress") String accommodationAddress,
-                                      @RequestParam("accommodationDescription") String accommdationDescription,
-                                      @RequestParam("pictureUrl") String pictureUrl,
-                                      Model model) {
+                                      @RequestParam("accommodationDescription") String accommodationDescription,
+                                      @RequestParam("accommodationImgs") List<MultipartFile> accommodationImgs,
+                                      Model model) throws IOException {
 
-        accommodationService.addAccommodation(themeName, accommodationName, accommodationAddress, accommdationDescription, pictureUrl);
+        Accommodation accommodation = accommodationService.addAccommodation(themeName, accommodationName, accommodationAddress, accommodationDescription);
+
+        // 이미지 파일 저장
+        for (MultipartFile file : accommodationImgs) {
+            AccommodationImg accommodationImg = new AccommodationImg();
+            accommodationImg.setAccommodation(accommodation);
+            if (!file.isEmpty()) {
+                accommodationImgService.saveAccommodationImg(accommodationImg, file);
+            }
+        }
+
+        if (accommodationImgs.get(0).isEmpty()) {
+            model.addAttribute("errorMessage", "숙소 이미지는 최소 한개는 넣어야합니다");
+        }
+
         return "redirect:/accommodation/business/list";
     }
 
     // 숙소 수정 페이지 show
     @GetMapping("/business/update/{accommodationId}")
-    public String showUpdateAccommodation(@PathVariable long accommodationId, Model model) {
+    public String showUpdateAccommodation(@PathVariable long accommodationId,
+                                          Model model) {
         Accommodation accommodation = accommodationService.getAccommodation(accommodationId);
+        List<AccommodationImg> accommodationImgs = accommodationImgRepository.findByAccommodation_AccommodationId(accommodationId);
+
         model.addAttribute("accommodation", accommodation);
+        model.addAttribute("accommodationImgs", accommodationImgs);
         return "pages/accommodation/business/update";
     }
 
@@ -123,16 +152,50 @@ public class AccommodationController {
                                       @RequestParam("themeName") String themeName,
                                       @RequestParam("accommodationName") String accommodationName,
                                       @RequestParam("accommodationAddress") String accommodationAddress,
-                                      @RequestParam("accommodationDescription") String accommdationDescription,
-                                      @RequestParam("pictureUrl") String pictureUrl) {
+                                      @RequestParam("accommodationDescription") String accommodationDescription,
+                                      @RequestParam("accommodationImgs") List<MultipartFile> accommodationImgs,
+                                      @RequestParam(value = "deleteImgIds", required = false) List<String> deleteImgIds) throws IOException {
 
-        accommodationService.editAccommodation(accommodationId, themeName, accommodationName, accommodationAddress, accommdationDescription, pictureUrl);
+        // 먼저 삭제할 이미지가 있다면 삭제 수행
+        if (deleteImgIds != null && !deleteImgIds.isEmpty()) {
+
+            List<Long> longDeleteImgIds = deleteImgIds.stream()
+                    .map(Long::parseLong) // 각 String 값을 Long으로 변환
+                    .collect(Collectors.toList());
+
+            for (Long imgId : longDeleteImgIds) {
+                AccommodationImg img = accommodationImgRepository.findById(imgId)
+                        .orElseThrow(() -> new NoSuchElementException("이미지 ID가 잘못되었습니다: " + imgId));
+                accommodationImgService.deleteAccommodationImg(img); // 이미지 삭제
+            }
+        }
+
+        // 이미지 추가
+        for (MultipartFile file : accommodationImgs) {
+            if (!file.isEmpty()) {
+                AccommodationImg accommodationImg = new AccommodationImg();
+                accommodationImg.setAccommodation(accommodationRepository.findById(accommodationId).orElse(null));
+                accommodationImgService.saveAccommodationImg(accommodationImg, file);
+            }
+        }
+
+        accommodationService.editAccommodation(accommodationId, themeName, accommodationName, accommodationAddress, accommodationDescription);
+
         return "redirect:/accommodation/business/list";
     }
 
     @PostMapping("/business/delete/{accommodationId}")
-    public String deleteAccommodation(@PathVariable long accommodationId) {
+    public String deleteAccommodation(@PathVariable long accommodationId) throws IOException {
+
+        // 상품 이미지 조회
+        List<AccommodationImg> accommodationImgs = accommodationImgRepository.findByAccommodation_AccommodationId(accommodationId);
+
+        for (AccommodationImg img : accommodationImgs) {
+            accommodationImgService.deleteAccommodationImg(img);
+        }
+
         accommodationService.deleteAccommodation(accommodationId);
+
         return "redirect:/accommodation/business/list";
     }
 

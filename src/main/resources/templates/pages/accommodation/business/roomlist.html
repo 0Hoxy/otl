@@ -38,7 +38,24 @@
         <tbody>
         <tr th:each="room : ${rooms}" class="property-item">
             <td>
-                <img th:src="${room.roomImageUrl}" alt="숙소 사진" class="property-img">
+                <!-- 이미지 Carousel 시작 -->
+                <div th:id="'carousel-' + ${room.roomId}" class="carousel slide property-img" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div th:each="img, iterStat : ${room.roomImgs}"
+                             class="carousel-item" th:classappend="${iterStat.index == 0} ? 'active' : ''">
+                            <img th:src="@{${img.roomImgPath}}" class="d-block w-100" alt="Room Image">
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" th:href="'#carousel-' + ${room.roomId}" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" th:href="'#carousel-' + ${room.roomId}" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+                <!-- 이미지 Carousel 끝 -->
             </td>
             <td th:text="${room.roomName}"></td>
             <td>
@@ -54,4 +71,8 @@
 </div>
 
 </body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </html>

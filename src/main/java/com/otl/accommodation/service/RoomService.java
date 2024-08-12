@@ -1,7 +1,9 @@
 package com.otl.accommodation.service;
 
+import com.otl.accommodation.entity.Accommodation;
 import com.otl.accommodation.entity.Room;
-import com.otl.accommodation.repository.AccommodationRepository;
+import com.otl.accommodation.entity.RoomImg;
+import com.otl.accommodation.repository.RoomImgRepository;
 import com.otl.accommodation.repository.RoomRepository;
 import com.otl.accommodation.specification.RoomSpecification;
 import lombok.RequiredArgsConstructor;
@@ -16,23 +18,38 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
 
-    private final AccommodationRepository accommodationRepository;
+    private final RoomImgRepository roomImgRepository;
 
-    public Room addRoom(Room room) {
+    public Room addRoom(Accommodation accommodation, String roomName, String roomDescription, String roomPrice, String checkIn, String checkOut, long roomMinCnt, long roomMaxCnt) {
+        Room room = new Room(roomName, roomDescription, roomPrice, checkIn, checkOut, roomMinCnt, roomMaxCnt);
+        room.setAccommodation(accommodation);
+
         return roomRepository.save(room);
     }
 
     public List<Room> getRoomListByAccommodationId(long accommodationId) {
-        return roomRepository.findByAccommodation_AccommodationId(accommodationId);
+        List<Room> rooms = roomRepository.findByAccommodation_AccommodationId(accommodationId);
+
+        for (Room room : rooms) {
+            List<RoomImg> images = roomImgRepository.findByRoom_RoomId(room.getRoomId());
+            room.setRoomImgs(images);
+        }
+
+        return rooms;
     }
 
     public Room getRoomById(long roomId) {
-        return roomRepository.findById(roomId).orElse(null);
+        Room room = roomRepository.findById(roomId).orElse(null);
+
+        List<RoomImg> images = roomImgRepository.findByRoom_RoomId(roomId);
+        room.setRoomImgs(images);
+
+        return room;
     }
 
     public void editRoom(long roomId, String roomName, String roomDescription,
                          String roomPrice, String checkIn, String checkOut,
-                         long roomMinCnt, long roomMaxCnt, String roomImageUrl) {
+                         long roomMinCnt, long roomMaxCnt) {
 
         Room room = roomRepository.findById(roomId).orElse(null);
 
@@ -44,7 +61,6 @@ public class RoomService {
             room.setCheckOut(checkOut);
             room.setRoomMinCnt(roomMinCnt);
             room.setRoomMaxCnt(roomMaxCnt);
-            room.setRoomImageUrl(roomImageUrl);
         } else {
             throw new RuntimeException("룸ID " + roomId + "을 찾을 수 없습니다.");
         }
@@ -64,6 +80,14 @@ public class RoomService {
     // 숙소 검색 기능
     public List<Room> getRoomsByAccommodationAndPeopleCnt(long accommodationId, Long peopleCnt) {
         Specification<Room> spec = RoomSpecification.findRoomForAccommodationAndPeopleCnt(accommodationId, peopleCnt);
-        return roomRepository.findAll(spec);
+
+        List<Room> rooms = roomRepository.findAll(spec);
+
+        for (Room room : rooms) {
+            List<RoomImg> images = roomImgRepository.findByRoom_RoomId(room.getRoomId());
+            room.setRoomImgs(images);
+        }
+
+        return rooms;
     }
 }

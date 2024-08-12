@@ -48,8 +48,7 @@
 <body>
 <div class="container">
     <h1 class="my-4 text-center">객실 추가</h1>
-    <form th:action="@{/accommodation/business/room/create/{accommodationId}(accommodationId=${accommodationId})}" method="post">
-<!--        <input type="hidden" th:name="accommodationId" th:value="${accommodationId}" />-->
+    <form th:action="@{/accommodation/business/room/create/{accommodationId}(accommodationId=${accommodationId})}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="roomName">객실명</label>
             <input type="text" class="form-control" id="roomName" name="roomName" placeholder="객실명을 입력하세요" required>
@@ -82,9 +81,10 @@
                 <input type="number" class="form-control" id="roomMaxCnt" name="roomMaxCnt" placeholder="최대 수용 인원 수" required>
             </div>
         </div>
-        <div class="form-group">
-            <label for="roomImageUrl">객실 사진 URL</label>
-            <input type="url" class="form-control" id="roomImageUrl" name="roomImageUrl" placeholder="객실 사진 URL을 입력하세요" required>
+        <div id="image-inputs" class="form-group">
+            <label for="roomImg1">객실 이미지</label>
+            <br>
+            <input type="file" id="roomImg1" name="roomImgs" accept="image/*" required>
         </div>
         <input type="hidden" name="accommodationId" th:value="accommodationId"> <!-- 외래키, 실제 값으로 대체 필요 -->
         <button type="submit" class="btn btn-primary btn-block">추가</button>
@@ -92,4 +92,37 @@
     <a th:href="@{/accommodation/business/roomlist(id=${accommodationId})}" class="btn btn-secondary btn-block mt-3">뒤로가기</a>
 </div>
 </body>
+
+<script>
+    // 최대 입력란 개수 설정
+    const MAX_IMAGE_INPUTS = 4;
+
+    // 이미지 입력란 추가 함수
+    function addImageInput(event) {
+        // 이벤트가 없으면 exit
+        if (!event || !event.target || !event.target.files.length) {
+            return;
+        }
+
+        var container = document.getElementById("image-inputs");
+        var inputCount = container.getElementsByTagName("input").length;
+
+        // 현재 입력란 개수가 최대 개수보다 적으면 새 입력란 추가
+        if (inputCount < MAX_IMAGE_INPUTS) {
+            var newInput = document.createElement("input");
+            newInput.setAttribute("type", "file");
+            newInput.setAttribute("name", "roomImgs");
+            newInput.setAttribute("accept", "image/*"); // 이미지 파일만 허용
+            newInput.addEventListener("change", addImageInput); // 파일이 선택되면 다음 입력란 추가
+            container.appendChild(newInput);
+        }
+    }
+
+    // 페이지가 로드된 후 초기 입력란에 이벤트 추가
+    document.addEventListener("DOMContentLoaded", function() {
+        var initialInput = document.getElementById("roomImg1");
+        initialInput.addEventListener("change", addImageInput);
+    });
+</script>
+
 </html>

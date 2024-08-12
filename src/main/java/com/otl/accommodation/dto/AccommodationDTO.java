@@ -12,6 +12,4 @@ public class AccommodationDTO {
 
     private String themeName;   // 업소 구분
 
-    private long pictureId; // 숙소 대표 사진
-
 }
