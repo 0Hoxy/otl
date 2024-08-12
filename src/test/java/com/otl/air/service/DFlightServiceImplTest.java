@@ -3,13 +3,10 @@ package com.otl.air.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-API-KEY.properties")
+@TestPropertySource(locations = "classpath:application-dev.properties")
 class DFlightServiceImplTest {
 
     @Value("${service_key}")
