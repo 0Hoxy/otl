@@ -1,10 +1,8 @@
 package com.otl.air.controller;
 
-import com.otl.air.entity.FlightEntity;
+import com.otl.air.dto.Flight;
 import com.otl.air.service.FlightRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,13 +35,13 @@ public class FlightRequestController {
                                 @RequestParam(value = "type", required = true, defaultValue = "1") int type, Model model
     ) throws Exception {
 
-        FlightEntity requestEntity = new FlightEntity( hl, gl, type, currency, departure_id, arrival_id,
+        Flight requestEntity = new Flight( hl, gl, type, currency, departure_id, arrival_id,
             LocalDate.parse(outbound_date, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)),
             return_date.equals(" ") ? null : LocalDate.parse(return_date, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)),
             travel_class, stops, max_price);
 
         // FlightRequestService에서 검색 요청
-        List<FlightEntity> flights = flightRequestService.searchFlights(requestEntity);
+        List<Flight> flights = flightRequestService.searchFlights(requestEntity);
 
         // Add response data to the model
         model.addAttribute("departure_id", departure_id);

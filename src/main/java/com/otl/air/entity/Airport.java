@@ -1,4 +1,4 @@
-package com.otl.air.dto;
+package com.otl.air.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -134,32 +134,6 @@
         <button type="submit" class="btn">검색</button>
     </form>
 
-    <div class="results" th:if="${flights != null and !#lists.isEmpty(flights)}">
-        <!--        <table>-->
-        <!--            <thead>-->
-        <!--            <tr>-->
-        <!--                <th>출발 공항</th>-->
-        <!--                <th>도착 공항</th>-->
-        <!--                <th>출발 날짜</th>-->
-        <!--                <th>귀국 날짜</th>-->
-        <!--                <th>좌석 클래스</th>-->
-        <!--                <th>정차 횟수</th>-->
-        <!--                <th>가격</th>-->
-        <!--            </tr>-->
-        <!--            </thead>-->
-        <!--            <tbody>-->
-        <!--            <tr th:each="flight : ${flights}">-->
-        <!--                <td th:text="${flight.departure_id}"></td>-->
-        <!--                <td th:text="${flight.arrival_id}"></td>-->
-        <!--                <td th:text="${flight.outbound_date}"></td>-->
-        <!--                <td th:text="${flight.return_date}"></td>-->
-        <!--                <td th:text="${flight.travel_class}"></td>-->
-        <!--                <td th:text="${flight.stops}"></td>-->
-        <!--                <td th:text="${flight.max_price} + ' ' + ${flight.currency}"></td>-->
-        <!--            </tr>-->
-        <!--            </tbody>-->
-        <!--        </table>-->
-    </div>
 
     <h2>검색 결과</h2>
     <table>

@@ -1,11 +1,10 @@
-package com.otl.air.entity;
+package com.otl.air.dto;
 
-
-import com.otl.air.dto.Airport;
+import com.otl.air.entity.Airport;
 
 import java.time.LocalDate;
 
-public class FlightEntity {
+public class Flight {
 
     private String api_key;
     private String hl;
@@ -29,11 +28,11 @@ public class FlightEntity {
 
     private String flight_number;
 
-    public FlightEntity() {}
+    public Flight() {}
 
-    public FlightEntity(String hl, String gl, int type, String currency,
-                        String departure_id, String arrival_id, LocalDate outbound_date,
-                        LocalDate return_date, int travel_class, int stops, int max_price) {
+    public Flight(String hl, String gl, int type, String currency,
+                  String departure_id, String arrival_id, LocalDate outbound_date,
+                  LocalDate return_date, int travel_class, int stops, int max_price) {
         this.hl = hl;
         this.gl = gl;
         this.type = type;

@@ -1,7 +1,7 @@
 package com.otl.air.service;
 
-import com.otl.air.dto.Airport;
-import com.otl.air.entity.FlightEntity;
+import com.otl.air.entity.Airport;
+import com.otl.air.dto.Flight;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class FlightRequestService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public List<FlightEntity> searchFlights(FlightEntity query) throws Exception {
+    public List<Flight> searchFlights(Flight query) throws Exception {
         try {
             String baseUrl = "https://serpapi.com/search.json?engine=google_flights";
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
@@ -47,14 +47,14 @@ public class FlightRequestService {
                 ? jsonObject.getJSONArray("best_flights")
                 : jsonObject.getJSONArray("other_flights");
 
-            List<FlightEntity> list = new ArrayList<>();
+            List<Flight> list = new ArrayList<>();
             for (int i = 0; i < flightsArray.length(); i++) {
                 JSONObject flightObject = flightsArray.getJSONObject(i);
                 JSONArray flightDetailsArray = flightObject.getJSONArray("flights");
 
                 for (int j = 0; j < flightDetailsArray.length(); j++) {
                     JSONObject flightDetail = flightDetailsArray.getJSONObject(j);
-                    FlightEntity flight = new FlightEntity();
+                    Flight flight = new Flight();
 
                     // Set departure and arrival airports
                     JSONObject departureAirport = flightDetail.getJSONObject("departure_airport");
@@ -99,7 +99,7 @@ public class FlightRequestService {
     }
 
 
-    private void addQueryParameters(UriComponentsBuilder builder, FlightEntity query) throws Exception {
+    private void addQueryParameters(UriComponentsBuilder builder, Flight query) throws Exception {
         if (query.getType() != 1 && query.getType() != 2) {
             throw new IllegalArgumentException("Invalid type value.");
         } else if (query.getType() == 2 && query.getReturn_date() == null) {
