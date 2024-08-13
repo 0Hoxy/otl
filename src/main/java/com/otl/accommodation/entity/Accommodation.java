@@ -23,6 +23,7 @@ public class Accommodation {
 
     private String accommodationAddress;    // 숙소 주소
 
+    @Column(length = 1000)
     private String accommodationDescription; // 숙소 설명
 
     private String themeName;   // 업소 구분
