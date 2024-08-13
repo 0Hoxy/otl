@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>항공편 검색</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group input[type="date"] {
+            padding: 6px;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>항공편 검색</h1>
+    <form action="/api/list" method="get">
+        <div class="form-group">
+            <label for="departure_id">출발 공항:</label>
+            <input type="text" id="departure_id" name="departure_id" th:value="${departure_id}" placeholder="출발지를 입력하세요. (ex. PUS)" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="arrival_id">도착 공항:</label>
+            <input type="text" id="arrival_id" name="arrival_id" th:value="${arrival_id}" placeholder="도착지를 입력하세요. (ex. NRT)" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="outbound_date">출발 날짜:</label>
+            <input type="date" id="outbound_date" name="outbound_date" th:value="${outbound_date}" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="return_date">귀국 날짜:</label>
+            <input type="date" id="return_date" name="return_date" th:value="${return_date}"/>
+        </div>
+
+        <div class="form-group">
+            <label for="travel_class">여행 클래스:</label>
+            <select id="travel_class" name="travel_class">
+                <option value="0" th:selected="${travel_class == 0}">모든 클래스</option>
+                <option value="1" th:selected="${travel_class == 1}">이코노미</option>
+                <option value="2" th:selected="${travel_class == 2}">비즈니스</option>
+                <option value="3" th:selected="${travel_class == 3}">일등석</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="stops">정차 횟수:</label>
+            <select id="stops" name="stops">
+                <option value="0" th:selected="${stops == 0}">직항</option>
+                <option value="1" th:selected="${stops == 1}">1회 정차</option>
+                <option value="2" th:selected="${stops == 2}">2회 정차</option>
+                <option value="3" th:selected="${stops == 3}">3회 정차</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="max_price">최대 가격:</label>
+            <input type="number" id="max_price" name="max_price" th:value="${max_price}" placeholder="최대 가격을 입력하세요." />
+        </div>
+
+        <div class="form-group">
+            <label for="type">여행 타입:</label>
+            <select id="type" name="type">
+                <option value="1" th:selected="${type == 1}">왕복</option>
+                <option value="2" th:selected="${type == 2}">편도</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn">검색</button>
+    </form>
+
+
+    <h2>검색 결과</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Departure Flight Number</th>
+            <th>Airline</th>
+            <th>Airplane</th>
+            <th>Departure Airport ID</th>
+            <th>Departure Airport Name</th>
+            <th>Departure Airport Time</th>
+            <th>Arrival Airport ID</th>
+            <th>Arrival Airport Name</th>
+            <th>Arrival Airport Time</th>
+            <th>Duration (minutes)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="flight : ${flights}" th:if="${flight != null}">
+            <td th:text="${flight.flight_number}"></td>
+            <td th:text="${flight.airline}"></td>
+            <td th:text="${flight.airplane}"></td>
+            <td th:text="${flight.departure_airport != null ? flight.departure_airport.id : 'N/A'}">Departure Airport ID</td>
+            <td th:text="${flight.departure_airport != null ? flight.departure_airport.name : 'N/A'}">Departure Airport Name</td>
+            <td th:text="${flight.departure_airport != null ? flight.departure_airport.time : 'N/A'}">Departure Airport Time</td>
+
+            <td th:text="${flight.arrival_airport != null ? flight.arrival_airport.id : 'N/A'}">Arrival Airport ID</td>
+            <td th:text="${flight.arrival_airport != null ? flight.arrival_airport.name : 'N/A'}">Arrival Airport Name</td>
+            <td th:text="${flight.arrival_airport != null ? flight.arrival_airport.time : 'N/A'}">Arrival Airport Time</td>
+            <td th:text="${flight.duration}">Duration</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${flights != null and #lists.isEmpty(flights)}">
+        <p>검색 결과가 없습니다.</p>
+    </div>
+
+</div>
+</body>
+</html>
