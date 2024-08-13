@@ -38,6 +38,9 @@
         .btn-custom {
             margin: 0 5px;
         }
+        .pagination {
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -49,7 +52,7 @@
     </div>
 
     <div class="list-group">
-        <div th:each="accommodation : ${accommodations}" class="property-item">
+        <div th:each="accommodation : ${accommodations.content}" class="property-item">
             <!-- 이미지 Carousel 시작 -->
             <div th:id="'carousel-' + ${accommodation.accommodationId}" class="carousel slide property-img" data-ride="carousel">
                 <div class="carousel-inner">
@@ -83,6 +86,32 @@
             </div>
         </div>
     </div>
+
+    <!-- 페이지 네비게이션 시작 -->
+    <nav>
+        <ul class="pagination">
+            <!-- 이전 페이지 버튼 -->
+            <li class="page-item" th:classappend="${accommodations.hasPrevious()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/accommodation/business/list(page=${accommodations.number - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- 페이지 번호 버튼들 -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, accommodations.totalPages)}"
+                th:classappend="${i == accommodations.number + 1} ? 'active' : ''">
+                <a class="page-link" th:href="@{/accommodation/business/list(page=${i - 1})}" th:text="${i}">1</a>
+            </li>
+
+            <!-- 다음 페이지 버튼 -->
+            <li class="page-item" th:classappend="${accommodations.hasNext()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/accommodation/business/list(page=${accommodations.number + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- 페이지 네비게이션 끝 -->
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

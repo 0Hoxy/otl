@@ -7,6 +7,8 @@ import com.otl.accommodation.repository.RoomImgRepository;
 import com.otl.accommodation.repository.RoomRepository;
 import com.otl.accommodation.specification.RoomSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,17 @@ public class RoomService {
 
     public List<Room> getRoomListByAccommodationId(long accommodationId) {
         List<Room> rooms = roomRepository.findByAccommodation_AccommodationId(accommodationId);
+
+        for (Room room : rooms) {
+            List<RoomImg> images = roomImgRepository.findByRoom_RoomId(room.getRoomId());
+            room.setRoomImgs(images);
+        }
+
+        return rooms;
+    }
+
+    public Page<Room> getAdminRoomListByAccommodationId(long accommodationId, Pageable pageable) {
+        Page<Room> rooms = roomRepository.findByAccommodation_AccommodationId(accommodationId, pageable);
 
         for (Room room : rooms) {
             List<RoomImg> images = roomImgRepository.findByRoom_RoomId(room.getRoomId());

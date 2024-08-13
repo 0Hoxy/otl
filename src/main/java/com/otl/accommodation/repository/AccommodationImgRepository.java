@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface AccommodationImgRepository extends JpaRepository<AccommodationImg, Long> {
+
+    // 숙소 ID 에 대한 이미지 정보
     List<AccommodationImg> findByAccommodation_AccommodationId(long accommodationId);
 }

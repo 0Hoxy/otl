@@ -7,6 +7,8 @@ import com.otl.accommodation.repository.AccommodationImgRepository;
 import com.otl.accommodation.repository.AccommodationRepository;
 import com.otl.accommodation.specification.AccommodationSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,18 @@ public class AccommodationService {
     // 숙소 전체 리스트
     public List<Accommodation> getAccommodations() {
         List<Accommodation> accommodations = accommodationRepository.findAll();
+
+        // 각 숙소에 대해 이미지를 로드하여 설정
+        for (Accommodation accommodation : accommodations) {
+            List<AccommodationImg> images = accommodationImgRepository.findByAccommodation_AccommodationId(accommodation.getAccommodationId());
+            accommodation.setAccommodationImgs(images);
+        }
+        return accommodations;
+    }
+
+    // 관리사 숙소 리스트 => 수정 필요
+    public Page<Accommodation> getAdminAccommodations(Pageable pageable) {
+        Page<Accommodation> accommodations = accommodationRepository.findAll(pageable);
 
         // 각 숙소에 대해 이미지를 로드하여 설정
         for (Accommodation accommodation : accommodations) {

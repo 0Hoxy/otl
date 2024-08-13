@@ -20,6 +20,9 @@
         .table {
             margin-top: 20px;
         }
+        .pagination {
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -68,6 +71,33 @@
         </tr>
         </tbody>
     </table>
+
+    <!-- 페이지 네비게이션 시작 -->
+    <nav>
+        <ul class="pagination">
+            <!-- 이전 페이지 버튼 -->
+            <li class="page-item" th:classappend="${rooms.hasPrevious()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/accommodation/business/roomlist(id=${param.id}, page=${rooms.number - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- 페이지 번호 버튼들 -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, rooms.totalPages)}"
+                th:classappend="${i == rooms.number + 1} ? 'active' : ''">
+                <a class="page-link" th:href="@{/accommodation/business/roomlist(id=${param.id}, page=${i - 1})}" th:text="${i}">1</a>
+            </li>
+
+            <!-- 다음 페이지 버튼 -->
+            <li class="page-item" th:classappend="${rooms.hasNext()} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/accommodation/business/roomlist(id=${param.id}, page=${rooms.number + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- 페이지 네비게이션 끝 -->
+
 </div>
 
 </body>

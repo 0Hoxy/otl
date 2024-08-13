@@ -10,6 +10,9 @@ import com.otl.accommodation.service.AccommodationImgService;
 import com.otl.accommodation.service.AccommodationService;
 import com.otl.accommodation.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -87,16 +90,16 @@ public class AccommodationController {
 
     // 사업자별 숙소 리스트 => 로그인(사업자 역할) 기능과 연결 후 수정 필요함
     @GetMapping("/business/list")
-    public String showAccommodationBy(Model model) {
-        List<Accommodation> accommodations = accommodationService.getAccommodations();
+    public String showAccommodationBy(Model model, @PageableDefault(size = 5) Pageable pageable) {
+        Page<Accommodation> accommodations = accommodationService.getAdminAccommodations(pageable);
         model.addAttribute("accommodations", accommodations);
         return "pages/accommodation/business/list";
     }
 
     // 숙소 id 를 파라미터로 받기
     @GetMapping("/business/roomlist")
-    public String showAccommodationRoomList(@RequestParam(name = "id") long accommodationId, Model model) {
-        List<Room> rooms = roomService.getRoomListByAccommodationId(accommodationId);
+    public String showAccommodationRoomList(@RequestParam(name = "id") long accommodationId, @PageableDefault(size = 10) Pageable pageable, Model model) {
+        Page<Room> rooms = roomService.getAdminRoomListByAccommodationId(accommodationId, pageable);
         model.addAttribute("rooms", rooms);
         return "pages/accommodation/business/roomlist";
     }
