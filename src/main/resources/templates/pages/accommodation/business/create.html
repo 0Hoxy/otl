@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숙소 등록 페이지</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .registration-form {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="registration-form">
+        <h2 class="text-center">숙소 등록</h2>
+        <form th:action="@{/accommodation/business/create}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="themeName">업소 구분</label>
+                <select class="form-control" id="themeName" name="themeName">
+                    <option value="호텔">호텔</option>
+                    <option value="펜션">펜션</option>
+                    <option value="모텔">모텔</option>
+                    <option value="리조트">리조트</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="accommodationName">숙소명</label>
+                <input type="text" class="form-control" id="accommodationName" name="accommodationName" placeholder="숙소명을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="accommodationAddress">숙소 주소</label>
+                <input type="text" class="form-control" id="accommodationAddress" name="accommodationAddress" placeholder="숙소 주소를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="accommodationDescription">객실 설명</label>
+                <textarea class="form-control" id="accommodationDescription" name="accommodationDescription" rows="3" placeholder="숙소 설명을 입력하세요" required></textarea>
+            </div>
+            <div id="image-inputs" class="form-group">
+                <label for="accommodationImg1">숙소 이미지</label>
+                <br>
+                <input type="file" id="accommodationImg1" name="accommodationImgs" accept="image/*" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">등록</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 최대 입력란 개수 설정
+    const MAX_IMAGE_INPUTS = 4;
+
+    // 이미지 입력란 추가 함수
+    function addImageInput(event) {
+        // 이벤트가 없으면 exit
+        if (!event || !event.target || !event.target.files.length) {
+            return;
+        }
+
+        var container = document.getElementById("image-inputs");
+        var inputCount = container.getElementsByTagName("input").length;
+
+        // 현재 입력란 개수가 최대 개수보다 적으면 새 입력란 추가
+        if (inputCount < MAX_IMAGE_INPUTS) {
+            var newInput = document.createElement("input");
+            newInput.setAttribute("type", "file");
+            newInput.setAttribute("name", "accommodationImgs");
+            newInput.setAttribute("accept", "image/*"); // 이미지 파일만 허용
+            newInput.addEventListener("change", addImageInput); // 파일이 선택되면 다음 입력란 추가
+            container.appendChild(newInput);
+        }
+    }
+
+    // 페이지가 로드된 후 초기 입력란에 이벤트 추가
+    document.addEventListener("DOMContentLoaded", function() {
+        var initialInput = document.getElementById("accommodationImg1");
+        initialInput.addEventListener("change", addImageInput);
+    });
+</script>
+
+</body>
+</html>
