@@ -43,6 +43,9 @@
             background-color: #5a6268;
             border: none;
         }
+        #descriptionError, #minCountError, #maxCountError {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -55,7 +58,7 @@
         </div>
         <div class="form-group">
             <label for="roomDescription">객실 설명</label>
-            <textarea class="form-control" id="roomDescription" name="roomDescription" rows="3" placeholder="객실 설명을 입력하세요" required></textarea>
+            <textarea class="form-control" id="roomDescription" name="roomDescription" rows="3" maxlength="200" placeholder="객실 설명을 입력하세요" required></textarea>
         </div>
         <div class="form-group">
             <label for="roomPrice">객실 가격</label>
@@ -75,10 +78,12 @@
             <div class="form-group col-md-6">
                 <label for="roomMinCnt">최소 수용 인원</label>
                 <input type="number" class="form-control" id="roomMinCnt" name="roomMinCnt" placeholder="최소 수용 인원 수" required>
+                <small id="minCountError" class="form-text text-danger" style="display: none;">최소 수용 인원은 1명 이상이어야 합니다.</small>
             </div>
             <div class="form-group col-md-6">
                 <label for="roomMaxCnt">최대 수용 인원</label>
                 <input type="number" class="form-control" id="roomMaxCnt" name="roomMaxCnt" placeholder="최대 수용 인원 수" required>
+                <small id="maxCountError" class="form-text text-danger" style="display: none;">최대 수용 인원은 최소 수용 인원보다 많아야 합니다.</small>
             </div>
         </div>
         <div id="image-inputs" class="form-group">
@@ -122,6 +127,49 @@
     document.addEventListener("DOMContentLoaded", function() {
         var initialInput = document.getElementById("roomImg1");
         initialInput.addEventListener("change", addImageInput);
+
+        var minCountInput = document.getElementById("roomMinCnt");
+        var maxCountInput = document.getElementById("roomMaxCnt");
+        var descriptionInput = document.getElementById("roomDescription");
+        var minCountError = document.getElementById("minCountError");
+        var maxCountError = document.getElementById("maxCountError");
+        var descriptionError = document.getElementById("descriptionError");
+        var form = document.querySelector("form");
+
+        function validateCounts() {
+            var minCount = parseInt(minCountInput.value, 10) || 0;
+            var maxCount = parseInt(maxCountInput.value, 10) || 0;
+            var isValid = true;
+
+            if (minCount < 1) {
+                minCountError.style.display = "block";
+                isValid = false;
+            } else {
+                minCountError.style.display = "none";
+            }
+
+            if (maxCount <= minCount) {
+                maxCountError.style.display = "block";
+                isValid = false;
+            } else {
+                maxCountError.style.display = "none";
+            }
+
+            form.querySelector("button[type='submit']").disabled = !isValid;
+        }
+
+        function validateDescription() {
+            var descriptionLength = descriptionInput.value.length;
+            if (descriptionLength > 200) {
+                descriptionError.style.display = "block";
+            } else {
+                descriptionError.style.display = "none";
+            }
+        }
+
+        minCountInput.addEventListener("input", validateCounts);
+        maxCountInput.addEventListener("input", validateCounts);
+        descriptionInput.addEventListener("input", validateDescription);
     });
 </script>
 

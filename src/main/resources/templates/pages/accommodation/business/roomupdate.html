@@ -43,6 +43,18 @@
             background-color: #5a6268;
             border: none;
         }
+        .image-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .image-item span {
+            margin-right: 10px;
+        }
+        #file-error-message {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -51,11 +63,11 @@
     <form th:action="@{/accommodation/business/room/update/{id}(id=${room.roomId})}" th:object="${room}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="roomName">객실명</label>
-            <input type="text" class="form-control" id="roomName" name="roomName" th:field="*{roomName}" placeholder="객실명을 입력하세요" required>
+            <input type="text" class="form-control" id="roomName" name="roomName" th:field="*{roomName}" maxlength="100" placeholder="객실명을 입력하세요" required>
         </div>
         <div class="form-group">
             <label for="roomDescription">객실 설명</label>
-            <textarea class="form-control" id="roomDescription" name="roomDescription" th:field="*{roomDescription}" rows="3" placeholder="객실 설명을 입력하세요" required></textarea>
+            <textarea class="form-control" id="roomDescription" name="roomDescription" th:field="*{roomDescription}" rows="3" maxlength="200" placeholder="객실 설명을 입력하세요" required></textarea>
         </div>
         <div class="form-group">
             <label for="roomPrice">객실 가격</label>
@@ -75,10 +87,12 @@
             <div class="form-group col-md-6">
                 <label for="roomMinCnt">최소 수용 인원</label>
                 <input type="number" class="form-control" id="roomMinCnt" name="roomMinCnt" th:field="*{roomMinCnt}" placeholder="최소 수용 인원 수" required>
+                <small id="minCountError" class="form-text text-danger" style="display: none;">최소 수용 인원은 1명 이상이어야 합니다.</small>
             </div>
             <div class="form-group col-md-6">
                 <label for="roomMaxCnt">최대 수용 인원</label>
                 <input type="number" class="form-control" id="roomMaxCnt" name="roomMaxCnt" th:field="*{roomMaxCnt}" placeholder="최대 수용 인원 수" required>
+                <small id="maxCountError" class="form-text text-danger" style="display: none;">최대 수용 인원은 최소 수용 인원보다 많아야 합니다.</small>
             </div>
         </div>
 
@@ -96,8 +110,9 @@
         <div class="form-group">
             <label>새로운 이미지 추가 (최대 4개)</label>
             <br>
-            <input type="file" id="new-images" name="roomImgs" multiple accept="image/*"/><br/>
-            <small class="error-message" id="file-error-message"></small>
+            <input type="file" id="new-images" name="roomImgs" multiple accept="image/*"/>
+            <br/>
+            <small id="file-error-message"></small>
         </div>
 
         <button type="submit" class="btn btn-primary btn-block">수정</button>
@@ -107,60 +122,52 @@
 </body>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const imageContainer = document.getElementById('image-container');
-        const fileInput = document.getElementById('new-images');
-        const errorMessage = document.getElementById('file-error-message');
-        const existingImagesContainer = document.getElementById('existing-images-container');
+    // 최대 파일 입력 개수 설정
+    const MAX_IMAGE_INPUTS = 4;
+    const fileInput = document.getElementById('new-images');
+    const fileErrorMessage = document.getElementById('file-error-message');
 
-        // 이미지 삭제 버튼 클릭 이벤트
-        imageContainer.addEventListener('click', function(event) {
-            if (event.target.classList.contains('delete-img-btn')) {
-                const imageItem = event.target.closest('.image-item');
-                const imgId = imageItem.getAttribute('data-img-id');
-
-                // 기존에 같은 이미지 ID를 가진 hidden input이 있는지 확인하고, 있다면 제거
-                const existingHiddenInputs = document.querySelectorAll(`input[name="deleteImgIds"][value="${imgId}"]`);
-                existingHiddenInputs.forEach(input => input.remove());
-
-                // 새로운 hidden input 생성하여 폼에 추가
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'deleteImgIds';
-                hiddenInput.value = imgId;
-
-                // 폼에 hidden input 추가
-                document.querySelector('form').appendChild(hiddenInput);
-
-                // 삭제된 이미지 항목을 화면에서 제거
-                imageItem.remove();
-
-                // 모든 이미지가 삭제되면 컨테이너 숨기기
-                if (imageContainer.children.length === 0) {
-                    existingImagesContainer.style.display = 'none';
-                }
-            }
-        });
-
-        // 파일 입력 변경 이벤트
-        fileInput.addEventListener('change', function(event) {
-            const existingImagesCount = document.querySelectorAll('#image-container .image-item').length;
-            const selectedFilesCount = event.target.files.length;
-            const maxImages = 4;
-            const totalCount = existingImagesCount + selectedFilesCount;
-
-            if (totalCount > maxImages) {
-                errorMessage.textContent = `최대 ${maxImages}개의 이미지만 업로드할 수 있습니다. 현재 ${existingImagesCount}개가 등록되어 있습니다.`;
-                fileInput.value = ''; // 선택된 파일을 비워줍니다.
-            } else {
-                errorMessage.textContent = '';
-            }
-        });
-
-        // 페이지 로드 시 기존 이미지가 없으면 컨테이너 숨기기
-        if (document.querySelectorAll('#image-container .image-item').length === 0) {
-            existingImagesContainer.style.display = 'none';
+    fileInput.addEventListener('change', function(event) {
+        const files = event.target.files;
+        if (files.length > MAX_IMAGE_INPUTS) {
+            fileErrorMessage.textContent = `최대 ${MAX_IMAGE_INPUTS}개의 이미지만 업로드할 수 있습니다.`;
+            event.target.value = ''; // 파일 선택 초기화
+        } else {
+            fileErrorMessage.textContent = '';
         }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const minCountInput = document.getElementById("roomMinCnt");
+        const maxCountInput = document.getElementById("roomMaxCnt");
+        const minCountError = document.getElementById("minCountError");
+        const maxCountError = document.getElementById("maxCountError");
+        const form = document.querySelector("form");
+
+        function validateCounts() {
+            const minCount = parseInt(minCountInput.value, 10) || 0;
+            const maxCount = parseInt(maxCountInput.value, 10) || 0;
+            let isValid = true;
+
+            if (minCount < 1) {
+                minCountError.style.display = "block";
+                isValid = false;
+            } else {
+                minCountError.style.display = "none";
+            }
+
+            if (maxCount <= minCount) {
+                maxCountError.style.display = "block";
+                isValid = false;
+            } else {
+                maxCountError.style.display = "none";
+            }
+
+            form.querySelector("button[type='submit']").disabled = !isValid;
+        }
+
+        minCountInput.addEventListener("input", validateCounts);
+        maxCountInput.addEventListener("input", validateCounts);
     });
 </script>
 
