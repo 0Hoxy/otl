@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 application.properties
 application-dev.properties
+application-API-KEY.properties
 
 ### STS ###
 .apt_generated
