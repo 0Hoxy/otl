@@ -4,8 +4,11 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+# Environment configuration files
 application.properties
 application-dev.properties
+application-oauth.properties
 
 ### STS ###
 .apt_generated

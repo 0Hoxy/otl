@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>객실 수정</title>
+    <!-- 부트스트랩 CSS 포함 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 커스텀 CSS -->
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            border-radius: 4px;
+        }
+        .form-row {
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border: none;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4 text-center">객실 수정</h1>
+    <form th:action="@{/accommodation/business/room/update/{id}(id=${room.roomId})}" th:object="${room}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="roomName">객실명</label>
+            <input type="text" class="form-control" id="roomName" name="roomName" th:field="*{roomName}" placeholder="객실명을 입력하세요" required>
+        </div>
+        <div class="form-group">
+            <label for="roomDescription">객실 설명</label>
+            <textarea class="form-control" id="roomDescription" name="roomDescription" th:field="*{roomDescription}" rows="3" placeholder="객실 설명을 입력하세요" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="roomPrice">객실 가격</label>
+            <input type="number" class="form-control" id="roomPrice" name="roomPrice" th:field="*{roomPrice}" placeholder="객실 가격을 입력하세요" required>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="checkIn">체크인 시간</label>
+                <input type="time" class="form-control" id="checkIn" name="checkIn" th:field="*{checkIn}" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="checkOut">체크아웃 시간</label>
+                <input type="time" class="form-control" id="checkOut" name="checkOut" th:field="*{checkOut}" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="roomMinCnt">최소 수용 인원</label>
+                <input type="number" class="form-control" id="roomMinCnt" name="roomMinCnt" th:field="*{roomMinCnt}" placeholder="최소 수용 인원 수" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="roomMaxCnt">최대 수용 인원</label>
+                <input type="number" class="form-control" id="roomMaxCnt" name="roomMaxCnt" th:field="*{roomMaxCnt}" placeholder="최대 수용 인원 수" required>
+            </div>
+        </div>
+
+        <div class="form-group" id="existing-images-container">
+            <label>기존 이미지</label>
+            <div id="image-container">
+                <div class="image-item" th:each="img : ${roomImgs}" th:id="'image-item-' + ${img.roomImgId}" th:data-img-id="${img.roomImgId}">
+                    <span th:text="${img.roomImgName}"></span>
+                    <button type="button" class="btn btn-danger btn-sm delete-img-btn">삭제</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 새로운 이미지 추가 -->
+        <div class="form-group">
+            <label>새로운 이미지 추가 (최대 4개)</label>
+            <br>
+            <input type="file" id="new-images" name="roomImgs" multiple accept="image/*"/><br/>
+            <small class="error-message" id="file-error-message"></small>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">수정</button>
+    </form>
+    <a th:href="@{/accommodation/business/roomlist(id=${room.accommodation.accommodationId})}" class="btn btn-secondary btn-block mt-3">뒤로가기</a>
+</div>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageContainer = document.getElementById('image-container');
+        const fileInput = document.getElementById('new-images');
+        const errorMessage = document.getElementById('file-error-message');
+        const existingImagesContainer = document.getElementById('existing-images-container');
+
+        // 이미지 삭제 버튼 클릭 이벤트
+        imageContainer.addEventListener('click', function(event) {
+            if (event.target.classList.contains('delete-img-btn')) {
+                const imageItem = event.target.closest('.image-item');
+                const imgId = imageItem.getAttribute('data-img-id');
+
+                // 기존에 같은 이미지 ID를 가진 hidden input이 있는지 확인하고, 있다면 제거
+                const existingHiddenInputs = document.querySelectorAll(`input[name="deleteImgIds"][value="${imgId}"]`);
+                existingHiddenInputs.forEach(input => input.remove());
+
+                // 새로운 hidden input 생성하여 폼에 추가
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'deleteImgIds';
+                hiddenInput.value = imgId;
+
+                // 폼에 hidden input 추가
+                document.querySelector('form').appendChild(hiddenInput);
+
+                // 삭제된 이미지 항목을 화면에서 제거
+                imageItem.remove();
+
+                // 모든 이미지가 삭제되면 컨테이너 숨기기
+                if (imageContainer.children.length === 0) {
+                    existingImagesContainer.style.display = 'none';
+                }
+            }
+        });
+
+        // 파일 입력 변경 이벤트
+        fileInput.addEventListener('change', function(event) {
+            const existingImagesCount = document.querySelectorAll('#image-container .image-item').length;
+            const selectedFilesCount = event.target.files.length;
+            const maxImages = 4;
+            const totalCount = existingImagesCount + selectedFilesCount;
+
+            if (totalCount > maxImages) {
+                errorMessage.textContent = `최대 ${maxImages}개의 이미지만 업로드할 수 있습니다. 현재 ${existingImagesCount}개가 등록되어 있습니다.`;
+                fileInput.value = ''; // 선택된 파일을 비워줍니다.
+            } else {
+                errorMessage.textContent = '';
+            }
+        });
+
+        // 페이지 로드 시 기존 이미지가 없으면 컨테이너 숨기기
+        if (document.querySelectorAll('#image-container .image-item').length === 0) {
+            existingImagesContainer.style.display = 'none';
+        }
+    });
+</script>
+
+</html>

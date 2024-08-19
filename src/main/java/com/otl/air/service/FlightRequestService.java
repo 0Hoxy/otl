@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@PropertySource("classpath:application-dev.properties")
+//@PropertySource("classpath:application-dev.properties")
 public class FlightRequestService {
 
-    @Value("${GOOGLE_FLIGHTS_API_KEY}")
+//    @Value("${GOOGLE_FLIGHTS_API_KEY}")
     private String apiKey;
 
     @Autowired
