@@ -155,7 +155,7 @@ img.google-img{
     object-fit: cover;
 }
 a.google{
-    border: 1px solid #CACACA;
+    border: 1px solid #f9f9f9;
 }
 a.google span{
     font-weight: 500;
