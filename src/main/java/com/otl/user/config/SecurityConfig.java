@@ -45,6 +45,12 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oAuth2Service)
                         )
+                        .successHandler((request, response, authentication) -> {
+                            Object principal = authentication.getPrincipal();
+                            System.out.println("Authenticated Principal: " + principal);
+                            // 로그인 성공 후 처리 로직
+                            response.sendRedirect("/");
+                        })
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))

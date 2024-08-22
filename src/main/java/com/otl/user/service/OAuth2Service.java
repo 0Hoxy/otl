@@ -1,10 +1,12 @@
 package com.otl.user.service;
 
+import com.otl.user.config.PrincipalDetails;
 import com.otl.user.constant.OAuthAttributes;
 import com.otl.user.dto.UserProfile;
 import com.otl.user.entity.User;
 import com.otl.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -18,8 +20,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
@@ -42,15 +46,12 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
         UserProfile userProfile = OAuthAttributes.extract(registrationId, attributes);
         userProfile.setProvider(registrationId);
 
-        updateOrSaveUser(userProfile);
+        User user = updateOrSaveUser(userProfile);
 
         Map<String, Object> customAttribute =
                 getCustomAttribute(registrationId, userNameAttributeName, attributes, userProfile);
 
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("USER")),
-                customAttribute,
-                userNameAttributeName);
+        return new PrincipalDetails(user,oAuth2User.getAttributes());
     }
 
     public Map getCustomAttribute(String registrationId,
@@ -70,9 +71,9 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
     public User updateOrSaveUser(UserProfile userProfile) {
         User user = userRepository
                 .findUserByEmailAndProvider(userProfile.getEmail(), userProfile.getProvider())
-                .map(value -> value.updateUser(userProfile.getUsername(), userProfile.getEmail()))
+                .map(value -> value.updateUser(userProfile.getUsername(), userProfile.getEmail(), userProfile.getRole()))
                 .orElse(userProfile.toEntity());
-
+        log.info("Saving user: {}", user); // 로그 추가
         return userRepository.save(user);
     }
 }

@@ -52,13 +52,15 @@ public class User extends BaseEntity {
         user.setPassword(password);
         //유저 롤 USER 만들기
         user.setRole(Role.USER);
+        user.setProvider("OTL");
         //user 반환
         return user;
     }
     // 사용자의 이름이나 이메일을 업데이트하는 메소드
-    public User updateUser(String username, String email) {
+    public User updateUser(String username, String email, Role role) {
         this.name = username;
         this.email = email;
+        this.role = role.USER;
 
         return this;
     }
