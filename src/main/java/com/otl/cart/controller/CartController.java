@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,10 +49,23 @@ public class CartController {
 
     @GetMapping("/cart")
     public String orderHist(Principal principal, Model model) {
-        List<CartDetailDto> cartDetailList = cartService.getCartList(principal.getName());
+        String email = null;
+        if (principal instanceof OAuth2User) {
+            OAuth2User oAuth2User = (OAuth2User) principal;
+            email = (String) oAuth2User.getAttributes().get("email");
+        } else {
+            email = principal.getName();
+        }
+
+        if (email == null) {
+            throw new RuntimeException("Email not found in principal.");
+        }
+
+        List<CartDetailDto> cartDetailList = cartService.getCartList(email);
         model.addAttribute("cartItems", cartDetailList);
         return "pages/cart/cartList";
     }
+
 
     @PatchMapping("/cartItem/{cartItemId}")
     public @ResponseBody ResponseEntity updateCartItem(@PathVariable("cartItemId") Long cartItemId, int count, Principal principal) {

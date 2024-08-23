@@ -1,6 +1,7 @@
 package com.otl.user.config;
 
 import com.otl.items.config.CustomAuthenticationEntryPoint;
+import com.otl.user.service.OAuth2Service;
 import com.otl.user.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,29 +18,39 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final UserService userService;
+    private final OAuth2Service oAuth2Service;
 
-    public SecurityConfig(UserService userService) {
+    public SecurityConfig(UserService userService, OAuth2Service oAuth2Service) {
         this.userService = userService;
+        this.oAuth2Service = oAuth2Service;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
-                        // 공개 페이지에 대한 접근 설정
-                        .requestMatchers("/", "/user/**","/item/**").permitAll()
-                        //여기에 비회원들도 입장가능한 페이지 추가
-                        .requestMatchers("/h2-console/**").permitAll()
-                        //ADMIN만 접근 가능
+                        .requestMatchers("/", "/user/**", "/item/**", "/h2-console/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
                         .loginPage("/user/login")
-                        .defaultSuccessUrl("/")
-                        //loadUserByUsername에서 넘겨받은 User.builder().build()의 파라미터에서 username을 "email"로 지정한다.(로그인 시 사용할 파라미터 이름으로 email을 지정한다)
+                        .defaultSuccessUrl("/", true)
                         .usernameParameter("email")
                         .failureUrl("/user/login/error")
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oAuth2Service)
+                        )
+                        .successHandler((request, response, authentication) -> {
+                            Object principal = authentication.getPrincipal();
+                            System.out.println("Authenticated Principal: " + principal);
+                            // 로그인 성공 후 처리 로직
+                            response.sendRedirect("/");
+                        })
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
@@ -47,7 +58,7 @@ public class SecurityConfig {
                 )
                 .userDetailsService(userService)
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**") // H2 콘솔 경로에 대해 CSRF 비활성화
+                        .ignoringRequestMatchers("/h2-console/**")
                 )
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin())
@@ -61,25 +72,23 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        //비밀번호를 데이터베이스에 그대로 저장했을 경우, 데이터베이스가 해킹당하면 고객의 회원 정보가 그대로 노출 되므로, 이를 해결하기 위해 BcryptPasswordEncoder를 @Bean으로 등록하여 사용한다.
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    //AuthenticationConfiguration을 통해 자동 구성된 AuthenticationManager를 가져옵니다.
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
         return authConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring()
+        return (web) -> web.ignoring()
                 .requestMatchers(
-                        new AntPathRequestMatcher("/js/**"),
-                        new AntPathRequestMatcher("/css/**"),
-                        new AntPathRequestMatcher("/images/**"),
-                        new AntPathRequestMatcher("/webjars/**")
-                ));
+                        "/js/**",
+                        "/css/**",
+                        "/images/**",
+                        "/webjars/**",
+                        "/image/**"
+                );
     }
-
 }
