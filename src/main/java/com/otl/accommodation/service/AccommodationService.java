@@ -34,7 +34,7 @@ public class AccommodationService {
         return accommodations;
     }
 
-    // 관리사 숙소 리스트 => 수정 필요
+    // 관리자 숙소 리스트 => 수정 필요
     public Page<Accommodation> getAdminAccommodations(Pageable pageable) {
         Page<Accommodation> accommodations = accommodationRepository.findAll(pageable);
 

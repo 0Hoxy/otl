@@ -86,7 +86,14 @@
         .filter-section .form-control {
             border-radius: 4px;
         }
+        #map {
+            width: 100%;
+            height: 400px;
+        }
     </style>
+    <!-- Kakao Map API JavaScript SDK 비동기 로딩 -->
+    <!-- API Key 넣어야함  -->
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=API-KEY&libraries=services"></script>
 </head>
 <body>
 <div class="container my-5">
@@ -112,8 +119,8 @@
         <!-- 이미지 Carousel 끝 -->
         <div class="card-body">
             <h5 class="card-title" th:text="${accommodation.accommodationName}">숙소명</h5>
-            <p class="card-text"><strong>구분:</strong> <span th:text="${accommodation.themeName}">Theme Name</span></p>
-            <p class="card-text"><strong>주소:</strong> <span th:text="${accommodation.accommodationAddress}">숙소 주소</span></p>
+            <p class="card-text"><strong>업소:</strong> <span th:text="${accommodation.themeName}">Theme Name</span></p>
+            <p class="card-text"><strong>주소:</strong> <span id="accommodationAddress" th:text="${accommodation.accommodationAddress}">숙소 주소</span></p>
             <a href="http://localhost:8080/accommodation/list" class="btn btn-back">목록으로 돌아가기</a>
         </div>
     </div>
@@ -178,6 +185,13 @@
             </div>
         </div>
     </div>
+    <!-- 지도 표시 영역 -->
+    <h2 class="my-4">숙소 위치</h2>
+    <div id="map"></div>
+    <p class="card-text"><span th:text="${accommodation.accommodationAddress}">숙소 주소</span></p>
+    <h2 class="my-4">숙소 소개</h2>
+    <h5 th:text="${accommodation.accommodationDescription}">객실 설명</h5>
+
 </div>
 
 <!-- 자바스크립트 -->
@@ -209,6 +223,29 @@
 
         // 체크아웃 날짜의 기본 최소 값을 체크인 날짜의 현재 값으로 설정합니다.
         checkOutDateInput.setAttribute('min', today);
+
+        // Kakao Map API 사용
+        const address = document.getElementById('accommodationAddress').textContent;
+        const accommodationName = document.querySelector('.card-title').textContent; // 숙소 이름을 가져옴
+        const mapContainer = document.getElementById('map'); // 지도를 표시할 div
+        const mapOption = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 기본 중심 좌표 (변경 필요)
+            level: 3
+        };
+        const map = new kakao.maps.Map(mapContainer, mapOption);
+
+        const geocoder = new kakao.maps.services.Geocoder();
+        geocoder.addressSearch(address, function(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                map.setCenter(coords);
+
+                const marker = new kakao.maps.Marker({
+                    map: map,
+                    position: coords
+                });
+            }
+        });
     });
 </script>
 
